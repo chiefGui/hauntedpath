@@ -1,5 +1,5 @@
 import { type IDBPDatabase, openDB } from 'idb'
-import type { GameState } from './story-engine'
+import type { GameState } from './services'
 
 export type SavedGame = {
   id: string

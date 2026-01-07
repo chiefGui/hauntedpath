@@ -1,19 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { deleteGame, loadGame, saveGame } from '../persistence'
-import type { Campaign, Choice, GameState } from '../story-engine'
-import {
-  addChoicePrompt,
-  addDisplayedMessage,
-  applyPresenceChanges,
-  createInitialState,
-  getAvailableChoices,
-  getCharacterPresence,
-  getCurrentBeat,
-  getPendingMessages,
-  isEnding,
-  selectChoice,
-  setTyping,
-} from '../story-engine'
+import type { Campaign, Choice, GameState } from '../services'
+import { GameStateService } from '../services'
 
 const DEFAULT_TYPING_DELAY = 800
 const DEFAULT_MESSAGE_DELAY = 400
@@ -36,11 +24,13 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
       if (saved) {
         setState(saved.state)
       } else {
-        // Create initial state and apply presence changes from starting beat
-        let initialState = createInitialState(campaign)
+        let initialState = GameStateService.create(campaign)
         const startBeat = campaign.beats[campaign.startBeatId]
         if (startBeat?.presenceChanges) {
-          initialState = applyPresenceChanges(initialState, startBeat.presenceChanges)
+          initialState = GameStateService.applyPresenceChanges(
+            initialState,
+            startBeat.presenceChanges,
+          )
         }
         setState(initialState)
       }
@@ -59,26 +49,23 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
   useEffect(() => {
     if (!state || isProcessing) return
 
-    const pending = getPendingMessages(campaign, state)
+    const pending = GameStateService.getPendingMessages(campaign, state)
     if (pending.length === 0) return
 
     setIsProcessing(true)
     const nextMessage = pending[0]
 
     if (nextMessage.sender !== 'system') {
-      // Show typing indicator
-      setState((s) => (s ? setTyping(s, true) : s))
+      setState((s) => (s ? GameStateService.setTyping(s, true) : s))
 
       const typingDelay = nextMessage.delay ?? DEFAULT_TYPING_DELAY
       const typingTimeout = window.setTimeout(() => {
-        // Add the message and hide typing
         setState((s) => {
           if (!s) return s
-          const withMessage = addDisplayedMessage(s, nextMessage)
-          return setTyping(withMessage, false)
+          const withMessage = GameStateService.addMessage(s, nextMessage)
+          return GameStateService.setTyping(withMessage, false)
         })
 
-        // Wait before processing next message
         const nextTimeout = window.setTimeout(() => {
           setIsProcessing(false)
         }, DEFAULT_MESSAGE_DELAY)
@@ -86,8 +73,7 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
       }, typingDelay)
       timeoutsRef.current.push(typingTimeout)
     } else {
-      // System messages appear immediately
-      setState((s) => (s ? addDisplayedMessage(s, nextMessage) : s))
+      setState((s) => (s ? GameStateService.addMessage(s, nextMessage) : s))
       const nextTimeout = window.setTimeout(() => {
         setIsProcessing(false)
       }, nextMessage.delay ?? 300)
@@ -105,17 +91,17 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
   const handleChoice = useCallback(
     (choice: Choice) => {
       if (!state) return
-      // Clear any pending timeouts
       timeoutsRef.current.forEach((t) => clearTimeout(t))
       timeoutsRef.current = []
 
-      // Update state with player's choice
-      let newState = selectChoice(campaign, state, choice)
+      let newState = GameStateService.selectChoice(state, choice)
 
-      // Apply presence changes from the new beat (if any)
-      const newBeat = getCurrentBeat(campaign, newState)
+      const newBeat = GameStateService.getCurrentBeat(campaign, newState)
       if (newBeat?.presenceChanges) {
-        newState = applyPresenceChanges(newState, newBeat.presenceChanges)
+        newState = GameStateService.applyPresenceChanges(
+          newState,
+          newBeat.presenceChanges,
+        )
       }
 
       setState(newState)
@@ -129,32 +115,35 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
     timeoutsRef.current = []
     setIsProcessing(false)
     await deleteGame(campaign.id)
-    setState(createInitialState(campaign))
+    setState(GameStateService.create(campaign))
   }, [campaign])
 
-  const choices = state ? getAvailableChoices(campaign, state) : []
-  const currentBeat = state ? getCurrentBeat(campaign, state) : null
-  const ending = state ? isEnding(campaign, state) : false
+  const choices = state
+    ? GameStateService.getAvailableChoices(campaign, state)
+    : []
+  const currentBeat = state
+    ? GameStateService.getCurrentBeat(campaign, state)
+    : null
+  const ending = state ? GameStateService.isEnding(campaign, state) : false
 
   // Create choice prompt when choices become available
   useEffect(() => {
     if (!state || choices.length === 0) return
 
-    // Check if we already have a prompt for this beat
     const existingPrompt = state.choicePrompts.some(
       (p) => p.beatId === state.currentBeatId,
     )
     if (existingPrompt) return
 
     setState((s) =>
-      s ? addChoicePrompt(s, state.currentBeatId, choices) : s,
+      s ? GameStateService.addChoicePrompt(s, state.currentBeatId, choices) : s,
     )
   }, [state, choices])
 
   const getPresence = useCallback(
     (characterId: string) => {
       if (!state) return null
-      return getCharacterPresence(state, characterId)
+      return GameStateService.getPresence(state, characterId)
     },
     [state],
   )

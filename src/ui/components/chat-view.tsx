@@ -6,7 +6,7 @@ import type {
   DisplayedMessage,
   GameState,
 } from '../../engine'
-import { ChoiceType, getCharacter } from '../../engine'
+import { CampaignService, ChoiceType } from '../../engine'
 import { ChoicePicker } from './choice-picker'
 import { MessageBubble } from './message-bubble'
 import { TypingIndicator } from './typing-indicator'
@@ -53,7 +53,7 @@ export function ChatView({ campaign, state, onChoiceSelect }: ChatViewProps) {
       {timeline.map((item) => {
         if (item.type === 'message') {
           const message = item.data
-          const character = getCharacter(campaign, message.sender)
+          const character = CampaignService.getCharacter(campaign, message.sender)
           const isPlayer = message.sender === 'player'
           const isSystem = message.sender === 'system'
 
