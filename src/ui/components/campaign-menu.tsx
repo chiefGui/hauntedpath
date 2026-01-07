@@ -1,9 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import type { AccentColor, AccentColorConfig, Character } from '../../engine'
-import { accentColors } from '../../engine'
-import { Drawer } from '../primitives'
-import { Avatar } from '../primitives'
+import { accentColors, clearAllData } from '../../engine'
+import { Avatar, Button, Drawer } from '../primitives'
 import { cn } from '../lib'
 
 type CampaignMenuProps = {
@@ -158,6 +157,18 @@ function SettingsPanel({
   onAccentColorChange,
   onBack,
 }: SettingsPanelProps) {
+  const [isClearing, setIsClearing] = useState(false)
+
+  const handleClearData = async () => {
+    setIsClearing(true)
+    try {
+      await clearAllData()
+      window.location.reload()
+    } catch {
+      setIsClearing(false)
+    }
+  }
+
   return (
     <motion.div
       initial={{ x: 50, opacity: 0 }}
@@ -209,6 +220,25 @@ function SettingsPanel({
               />
             ))}
           </div>
+        </section>
+
+        {/* Danger Zone */}
+        <section className="space-y-4 pt-4 border-t border-border">
+          <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            Data
+          </h3>
+          <Button
+            variant="destructive"
+            size="sm"
+            className="w-full"
+            onClick={handleClearData}
+            disabled={isClearing}
+          >
+            {isClearing ? 'Clearing...' : 'Clear All Data'}
+          </Button>
+          <p className="text-xs text-muted-foreground/60">
+            Removes all saved progress and settings.
+          </p>
         </section>
       </Drawer.Body>
     </motion.div>
