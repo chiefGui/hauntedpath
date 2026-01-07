@@ -10,7 +10,7 @@ export type SavedGame = {
 }
 
 const DB_NAME = 'hauntedpath'
-const DB_VERSION = 1
+const DB_VERSION = 2
 const STORE_NAME = 'saved-games'
 
 type HauntedPathDB = IDBPDatabase<{
@@ -18,6 +18,10 @@ type HauntedPathDB = IDBPDatabase<{
     key: string
     value: SavedGame
     indexes: { 'by-campaign': string }
+  }
+  settings: {
+    key: string
+    value: unknown
   }
 }>
 
@@ -31,10 +35,19 @@ function getDB(): Promise<HauntedPathDB> {
         value: SavedGame
         indexes: { 'by-campaign': string }
       }
+      settings: {
+        key: string
+        value: unknown
+      }
     }>(DB_NAME, DB_VERSION, {
-      upgrade(db) {
-        const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' })
-        store.createIndex('by-campaign', 'campaignId')
+      upgrade(db, oldVersion) {
+        if (oldVersion < 1) {
+          const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' })
+          store.createIndex('by-campaign', 'campaignId')
+        }
+        if (oldVersion < 2) {
+          db.createObjectStore('settings', { keyPath: 'id' })
+        }
       },
     })
   }
