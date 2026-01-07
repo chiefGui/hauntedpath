@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import type { Campaign, GameState, Choice } from './types'
+import type { Campaign, GameState, Choice } from '../story-engine'
 import {
   createInitialState,
   getCurrentBeat,
@@ -9,13 +9,13 @@ import {
   setTyping,
   getPendingMessages,
   isEnding,
-} from './story-engine'
-import { saveGame, loadGame, deleteGame } from './persistence'
+} from '../story-engine'
+import { saveGame, loadGame, deleteGame } from '../persistence'
 
 const DEFAULT_TYPING_DELAY = 1500
 const DEFAULT_MESSAGE_DELAY = 800
 
-interface UseGameOptions {
+export type UseGameOptions = {
   autoSave?: boolean
 }
 
@@ -26,7 +26,6 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
   const processingRef = useRef(false)
   const timeoutsRef = useRef<number[]>([])
 
-  // Load saved game or create new
   useEffect(() => {
     async function init() {
       const saved = await loadGame(campaign.id)
@@ -40,13 +39,11 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
     init()
   }, [campaign.id])
 
-  // Auto-save
   useEffect(() => {
     if (!autoSave || !state || isLoading) return
     saveGame(campaign.id, state)
   }, [campaign.id, state, autoSave, isLoading])
 
-  // Process pending messages with realistic delays
   useEffect(() => {
     if (!state || processingRef.current) return
 
@@ -56,7 +53,6 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
     processingRef.current = true
     const nextMessage = pending[0]
 
-    // Show typing indicator (only for non-system messages)
     if (nextMessage.sender !== 'system') {
       setState((s) => (s ? setTyping(s, true) : s))
 
@@ -68,7 +64,6 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
           return setTyping(withMessage, false)
         })
 
-        // Small delay before processing next message
         const nextTimeout = window.setTimeout(() => {
           processingRef.current = false
         }, DEFAULT_MESSAGE_DELAY)
@@ -76,7 +71,6 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
       }, typingDelay)
       timeoutsRef.current.push(typingTimeout)
     } else {
-      // System messages appear immediately
       setState((s) => (s ? addDisplayedMessage(s, nextMessage) : s))
       const nextTimeout = window.setTimeout(() => {
         processingRef.current = false
@@ -85,7 +79,6 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
     }
   }, [campaign, state])
 
-  // Cleanup timeouts
   useEffect(() => {
     return () => {
       timeoutsRef.current.forEach((t) => clearTimeout(t))

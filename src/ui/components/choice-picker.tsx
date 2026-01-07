@@ -1,7 +1,7 @@
-import { Button } from '@ariakit/react'
 import type { Choice } from '../../engine'
+import { Button } from '../primitives'
 
-interface ChoicePickerProps {
+export type ChoicePickerProps = {
   choices: Choice[]
   onSelect: (choice: Choice) => void
   disabled?: boolean
@@ -21,7 +21,8 @@ export function ChoicePicker({
           key={choice.id}
           onClick={() => onSelect(choice)}
           disabled={disabled}
-          className="w-full px-4 py-3 text-left text-[15px] text-[--color-accent] bg-[--color-surface-secondary] rounded-2xl transition-colors hover:bg-[--color-surface-tertiary] active:bg-[--color-surface-tertiary] disabled:opacity-50 disabled:cursor-not-allowed"
+          variant="ghost"
+          className="w-full justify-start text-left"
         >
           {choice.text}
         </Button>

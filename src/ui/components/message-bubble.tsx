@@ -1,6 +1,6 @@
 import type { DisplayedMessage, Character } from '../../engine'
 
-interface MessageBubbleProps {
+export type MessageBubbleProps = {
   message: DisplayedMessage
   character: Character | null
   isPlayer: boolean
@@ -31,7 +31,6 @@ export function MessageBubble({
     <div
       className={`flex items-end gap-2 ${isPlayer ? 'flex-row-reverse' : 'flex-row'}`}
     >
-      {/* Avatar */}
       {!isPlayer && showAvatar && (
         <div className="w-7 h-7 shrink-0">
           {character && (
@@ -45,11 +44,9 @@ export function MessageBubble({
       )}
       {!isPlayer && !showAvatar && <div className="w-7 shrink-0" />}
 
-      {/* Bubble */}
       <div
         className={`max-w-[75%] flex flex-col ${isPlayer ? 'items-end' : 'items-start'}`}
       >
-        {/* Sender name for group chats */}
         {isGroup && !isPlayer && showAvatar && character && (
           <span className="text-xs text-[--color-text-secondary] mb-1 ml-3">
             {character.name}
@@ -61,9 +58,7 @@ export function MessageBubble({
             src={message.content}
             alt="Shared image"
             className={`max-w-full rounded-2xl ${
-              isPlayer
-                ? 'rounded-br-md'
-                : 'rounded-bl-md'
+              isPlayer ? 'rounded-br-md' : 'rounded-bl-md'
             }`}
           />
         ) : (
@@ -78,7 +73,6 @@ export function MessageBubble({
           </div>
         )}
 
-        {/* Status indicator for player messages */}
         {isPlayer && (
           <span className="text-[10px] text-[--color-text-tertiary] mt-0.5 mr-1">
             {message.status === 'read'

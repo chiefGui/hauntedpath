@@ -1,6 +1,6 @@
 import type { Character } from '../../engine'
 
-interface TypingIndicatorProps {
+export type TypingIndicatorProps = {
   character: Character | null
   showAvatar?: boolean
 }
@@ -11,7 +11,6 @@ export function TypingIndicator({
 }: TypingIndicatorProps) {
   return (
     <div className="flex items-end gap-2">
-      {/* Avatar */}
       {showAvatar && (
         <div className="w-7 h-7 shrink-0">
           {character && (
@@ -25,7 +24,6 @@ export function TypingIndicator({
       )}
       {!showAvatar && <div className="w-7 shrink-0" />}
 
-      {/* Typing bubble */}
       <div className="bg-[--color-bubble-npc] px-4 py-3 rounded-2xl rounded-bl-md">
         <div className="flex gap-1">
           <span

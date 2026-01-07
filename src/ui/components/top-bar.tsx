@@ -1,7 +1,7 @@
-import { Button } from '@ariakit/react'
 import type { Character } from '../../engine'
+import { Button } from '../primitives'
 
-interface TopBarProps {
+export type TopBarProps = {
   characters: Character[]
   isGroup?: boolean
   groupName?: string
@@ -22,10 +22,11 @@ export function TopBar({
 
   return (
     <div className="flex items-center gap-3 px-4 py-3 bg-[--color-surface-elevated] border-b border-[--color-surface-tertiary]">
-      {/* Back button */}
       <Button
         onClick={onBack}
-        className="flex items-center gap-1 text-[--color-accent] hover:opacity-80 transition-opacity"
+        variant="ghost"
+        size="sm"
+        className="p-1"
       >
         <svg
           width="12"
@@ -44,7 +45,6 @@ export function TopBar({
         </svg>
       </Button>
 
-      {/* Avatar(s) */}
       <div className="relative">
         {isGroup ? (
           <div className="flex -space-x-2">
@@ -69,7 +69,6 @@ export function TopBar({
         )}
       </div>
 
-      {/* Name */}
       <div className="flex-1 min-w-0">
         <h1 className="text-[17px] font-semibold truncate">{displayName}</h1>
         {isGroup && (

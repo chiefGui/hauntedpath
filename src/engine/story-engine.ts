@@ -1,11 +1,65 @@
-import type {
-  Campaign,
-  Beat,
-  Choice,
-  GameState,
-  DisplayedMessage,
-  Message,
-} from './types'
+export type MessageType = 'text' | 'image' | 'system'
+
+export type Message = {
+  id: string
+  sender: string
+  type: MessageType
+  content: string
+  delay?: number
+}
+
+export type Choice = {
+  id: string
+  text: string
+  nextBeatId: string
+}
+
+export type Beat = {
+  id: string
+  messages: Message[]
+  choices: Choice[]
+  isEnding?: boolean
+}
+
+export type Character = {
+  id: string
+  name: string
+  avatar: string
+}
+
+export type Campaign = {
+  id: string
+  title: string
+  description: string
+  coverImage: string
+  protagonist: Character
+  characters: Character[]
+  beats: Record<string, Beat>
+  startBeatId: string
+  isGroup?: boolean
+}
+
+export type MessageStatus = 'sending' | 'sent' | 'delivered' | 'read'
+
+export type DisplayedMessage = {
+  id: string
+  messageId: string
+  sender: string
+  type: MessageType
+  content: string
+  timestamp: number
+  status: MessageStatus
+}
+
+export type GameState = {
+  campaignId: string
+  currentBeatId: string
+  displayedMessages: DisplayedMessage[]
+  isTyping: boolean
+  visitedBeatIds: string[]
+  startedAt: number
+  lastPlayedAt: number
+}
 
 export function createInitialState(campaign: Campaign): GameState {
   const now = Date.now()
@@ -34,7 +88,6 @@ export function getAvailableChoices(
   const beat = getCurrentBeat(campaign, state)
   if (!beat) return []
 
-  // Only show choices after all messages are displayed
   const beatMessages = beat.messages
   const displayedCount = state.displayedMessages.filter((dm) =>
     beatMessages.some((m) => m.id === dm.messageId)

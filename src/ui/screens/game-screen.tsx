@@ -1,9 +1,9 @@
-import { Button } from '@ariakit/react'
 import type { Campaign } from '../../engine'
 import { useGame } from '../../engine'
 import { TopBar, ChatView, ChoicePicker } from '../components'
+import { Button } from '../primitives'
 
-interface GameScreenProps {
+export type GameScreenProps = {
   campaign: Campaign
   onBack: () => void
 }
@@ -36,16 +36,10 @@ export function GameScreen({ campaign, onBack }: GameScreenProps) {
             End of story
           </p>
           <div className="flex gap-2">
-            <Button
-              onClick={restart}
-              className="flex-1 px-4 py-3 text-[15px] text-[--color-text-primary] bg-[--color-surface-secondary] rounded-2xl transition-colors hover:bg-[--color-surface-tertiary]"
-            >
+            <Button onClick={restart} variant="secondary" className="flex-1">
               Play Again
             </Button>
-            <Button
-              onClick={onBack}
-              className="flex-1 px-4 py-3 text-[15px] text-[--color-accent] bg-[--color-surface-secondary] rounded-2xl transition-colors hover:bg-[--color-surface-tertiary]"
-            >
+            <Button onClick={onBack} variant="ghost" className="flex-1">
               Back to Stories
             </Button>
           </div>

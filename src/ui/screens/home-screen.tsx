@@ -3,7 +3,7 @@ import type { Campaign, SavedGame } from '../../engine'
 import { getAllSavedGames } from '../../engine'
 import { CampaignCard } from '../components'
 
-interface HomeScreenProps {
+export type HomeScreenProps = {
   campaigns: Campaign[]
   onSelectCampaign: (campaign: Campaign) => void
 }
@@ -20,7 +20,6 @@ export function HomeScreen({ campaigns, onSelectCampaign }: HomeScreenProps) {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
       <div className="px-4 pt-12 pb-4 bg-[--color-surface]">
         <h1 className="text-3xl font-bold">Stories</h1>
         <p className="text-sm text-[--color-text-secondary] mt-1">
@@ -28,7 +27,6 @@ export function HomeScreen({ campaigns, onSelectCampaign }: HomeScreenProps) {
         </p>
       </div>
 
-      {/* Campaign list */}
       <div className="flex-1 overflow-y-auto px-4 pb-8">
         <div className="space-y-4">
           {campaigns.map((campaign) => (

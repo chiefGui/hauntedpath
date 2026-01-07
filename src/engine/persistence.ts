@@ -1,5 +1,13 @@
 import { openDB, type IDBPDatabase } from 'idb'
-import type { SavedGame, GameState } from './types'
+import type { GameState } from './story-engine'
+
+export type SavedGame = {
+  id: string
+  campaignId: string
+  state: GameState
+  createdAt: number
+  updatedAt: number
+}
 
 const DB_NAME = 'hauntedpath'
 const DB_VERSION = 1
@@ -40,7 +48,6 @@ export async function saveGame(
   const db = await getDB()
   const now = Date.now()
 
-  // Check if save exists for this campaign
   const existing = await db.getFromIndex(STORE_NAME, 'by-campaign', campaignId)
 
   const savedGame: SavedGame = existing
