@@ -5,6 +5,7 @@ export type TopBarProps = {
   characters: Character[]
   isGroup?: boolean
   groupName?: string
+  isTyping?: boolean
   onBack: () => void
 }
 
@@ -12,33 +13,54 @@ export function TopBar({
   characters,
   isGroup = false,
   groupName,
+  isTyping = false,
   onBack,
 }: TopBarProps) {
   const displayName = isGroup
     ? (groupName ?? characters.map((c) => c.name).join(', '))
     : (characters[0]?.name ?? 'Unknown')
 
+  const primaryCharacter = characters[0]
+  const status = primaryCharacter?.status
+
+  const getStatusText = () => {
+    if (isTyping) return 'typing...'
+    if (isGroup) return `${characters.length} people`
+    if (status === 'online') return 'online'
+    if (status === 'away') return 'away'
+    return null
+  }
+
+  const statusText = getStatusText()
+
   return (
-    <div className="flex items-center gap-3 px-4 py-3 bg-card border-b border-border">
-      <Button onClick={onBack} variant="ghost" size="icon">
+    <div className="flex items-center h-14 px-2 bg-card border-b border-border">
+      {/* Back button */}
+      <Button
+        onClick={onBack}
+        variant="ghost"
+        size="icon"
+        className="shrink-0 -ml-1"
+      >
         <svg
-          width="12"
-          height="20"
-          viewBox="0 0 12 20"
+          width="10"
+          height="18"
+          viewBox="0 0 10 18"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="M10 2L2 10L10 18"
+            d="M9 1L1 9L9 17"
             stroke="currentColor"
-            strokeWidth="2.5"
+            strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
         </svg>
       </Button>
 
-      <div className="relative">
+      {/* Avatar */}
+      <div className="shrink-0 ml-1">
         {isGroup ? (
           <div className="flex -space-x-2">
             {characters.slice(0, 3).map((char, i) => (
@@ -46,7 +68,7 @@ export function TopBar({
                 key={char.id}
                 src={char.avatar}
                 alt={char.name}
-                size="md"
+                size="sm"
                 className="border-2 border-card"
                 style={{ zIndex: 3 - i }}
               />
@@ -54,7 +76,7 @@ export function TopBar({
           </div>
         ) : (
           <Avatar
-            src={characters[0]?.avatar}
+            src={primaryCharacter?.avatar}
             alt={displayName}
             fallback={displayName}
             size="md"
@@ -62,11 +84,18 @@ export function TopBar({
         )}
       </div>
 
-      <div className="flex-1 min-w-0">
-        <h1 className="text-[17px] font-semibold truncate">{displayName}</h1>
-        {isGroup && (
-          <p className="text-xs text-muted-foreground truncate">
-            {characters.length} people
+      {/* Name and status */}
+      <div className="flex-1 min-w-0 ml-3">
+        <h1 className="text-[17px] font-semibold leading-tight truncate">
+          {displayName}
+        </h1>
+        {statusText && (
+          <p
+            className={`text-xs leading-tight truncate ${
+              isTyping ? 'text-primary' : 'text-muted-foreground'
+            }`}
+          >
+            {statusText}
           </p>
         )}
       </div>

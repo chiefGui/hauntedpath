@@ -4,7 +4,7 @@ import { cn } from '../lib'
 import { Avatar, type AvatarProps } from './avatar'
 
 const bubbleVariants = tv({
-  base: 'px-3 py-2 rounded-2xl text-[15px] leading-tight max-w-[75%]',
+  base: 'px-3 py-2 rounded-2xl text-[15px] leading-snug',
   variants: {
     variant: {
       player: 'bg-primary text-primary-foreground rounded-br-md',
@@ -82,7 +82,7 @@ function BubbleContent({ children, className }: BubbleContentProps) {
   return (
     <div
       className={cn(
-        'flex flex-col',
+        'flex flex-col max-w-[80%]',
         variant === 'player' ? 'items-end' : 'items-start',
         className,
       )}
