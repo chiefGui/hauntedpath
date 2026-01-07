@@ -13,8 +13,8 @@
   --color-popover: oklch(17% 0.005 285);
   --color-popover-foreground: oklch(100% 0 0);
 
-  /* Default accent: Violet (can be overridden by user settings) */
-  --color-primary: oklch(62% 0.24 290);
+  /* Default accent: Sky (can be overridden by user settings) */
+  --color-primary: oklch(62% 0.22 250);
   --color-primary-foreground: oklch(100% 0 0);
 
   --color-secondary: oklch(24% 0.005 285);
@@ -34,10 +34,10 @@
 
   --color-border: oklch(30% 0.005 285);
   --color-input: oklch(30% 0.005 285);
-  --color-ring: oklch(62% 0.24 290);
+  --color-ring: oklch(62% 0.22 250);
 
   /* iMessage specific */
-  --color-bubble-player: oklch(62% 0.24 290);
+  --color-bubble-player: oklch(62% 0.22 250);
   --color-bubble-npc: oklch(24% 0.005 285);
 
   /* Legacy aliases */
@@ -50,7 +50,7 @@
   --color-text-secondary: var(--color-muted-foreground);
   --color-text-tertiary: oklch(46% 0.01 285);
 
-  --color-accent-hover: oklch(58% 0.22 290);
+  --color-accent-hover: oklch(58% 0.20 250);
 }
 
 * {

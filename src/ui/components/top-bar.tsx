@@ -114,24 +114,24 @@ export function TopBar({
 
       {/* Menu button */}
       {onMenuOpen && (
-        <Button
+        <button
+          type="button"
           onClick={onMenuOpen}
-          variant="ghost"
-          size="icon"
-          className="shrink-0 -mr-1"
+          className="shrink-0 w-10 h-10 flex items-center justify-center rounded-full hover:bg-secondary/80 active:bg-secondary active:scale-95 transition-all"
         >
           <svg
             width="4"
-            height="16"
-            viewBox="0 0 4 16"
+            height="18"
+            viewBox="0 0 4 18"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            className="text-foreground"
           >
-            <circle cx="2" cy="2" r="1.5" fill="currentColor" />
-            <circle cx="2" cy="8" r="1.5" fill="currentColor" />
-            <circle cx="2" cy="14" r="1.5" fill="currentColor" />
+            <circle cx="2" cy="2" r="2" fill="currentColor" />
+            <circle cx="2" cy="9" r="2" fill="currentColor" />
+            <circle cx="2" cy="16" r="2" fill="currentColor" />
           </svg>
-        </Button>
+        </button>
       )}
     </div>
   )
