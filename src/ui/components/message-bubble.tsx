@@ -1,4 +1,4 @@
-import type { DisplayedMessage, Character } from '../../engine'
+import type { Character, DisplayedMessage } from '../../engine'
 import { Avatar } from '../primitives'
 
 export type MessageBubbleProps = {

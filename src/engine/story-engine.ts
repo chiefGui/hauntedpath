@@ -76,21 +76,21 @@ export function createInitialState(campaign: Campaign): GameState {
 
 export function getCurrentBeat(
   campaign: Campaign,
-  state: GameState
+  state: GameState,
 ): Beat | null {
   return campaign.beats[state.currentBeatId] ?? null
 }
 
 export function getAvailableChoices(
   campaign: Campaign,
-  state: GameState
+  state: GameState,
 ): Choice[] {
   const beat = getCurrentBeat(campaign, state)
   if (!beat) return []
 
   const beatMessages = beat.messages
   const displayedCount = state.displayedMessages.filter((dm) =>
-    beatMessages.some((m) => m.id === dm.messageId)
+    beatMessages.some((m) => m.id === dm.messageId),
   ).length
 
   if (displayedCount < beatMessages.length) return []
@@ -102,7 +102,7 @@ export function getAvailableChoices(
 export function selectChoice(
   _campaign: Campaign,
   state: GameState,
-  choice: Choice
+  choice: Choice,
 ): GameState {
   const playerMessage: DisplayedMessage = {
     id: crypto.randomUUID(),
@@ -125,7 +125,7 @@ export function selectChoice(
 
 export function addDisplayedMessage(
   state: GameState,
-  message: Message
+  message: Message,
 ): GameState {
   const displayedMessage: DisplayedMessage = {
     id: crypto.randomUUID(),
@@ -150,13 +150,13 @@ export function setTyping(state: GameState, isTyping: boolean): GameState {
 
 export function getPendingMessages(
   campaign: Campaign,
-  state: GameState
+  state: GameState,
 ): Message[] {
   const beat = getCurrentBeat(campaign, state)
   if (!beat) return []
 
   const displayedMessageIds = new Set(
-    state.displayedMessages.map((dm) => dm.messageId)
+    state.displayedMessages.map((dm) => dm.messageId),
   )
 
   return beat.messages.filter((m) => !displayedMessageIds.has(m.id))

@@ -1,4 +1,4 @@
-import { openDB, type IDBPDatabase } from 'idb'
+import { type IDBPDatabase, openDB } from 'idb'
 import type { GameState } from './story-engine'
 
 export type SavedGame = {
@@ -43,7 +43,7 @@ function getDB(): Promise<HauntedPathDB> {
 
 export async function saveGame(
   campaignId: string,
-  state: GameState
+  state: GameState,
 ): Promise<SavedGame> {
   const db = await getDB()
   const now = Date.now()

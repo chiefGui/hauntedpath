@@ -15,8 +15,8 @@ export function TopBar({
   onBack,
 }: TopBarProps) {
   const displayName = isGroup
-    ? groupName ?? characters.map((c) => c.name).join(', ')
-    : characters[0]?.name ?? 'Unknown'
+    ? (groupName ?? characters.map((c) => c.name).join(', '))
+    : (characters[0]?.name ?? 'Unknown')
 
   return (
     <div className="flex items-center gap-3 px-4 py-3 bg-[--color-surface-elevated] border-b border-[--color-surface-tertiary]">

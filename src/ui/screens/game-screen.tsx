@@ -1,6 +1,6 @@
 import type { Campaign } from '../../engine'
 import { useGame } from '../../engine'
-import { TopBar, ChatView, ChoicePicker } from '../components'
+import { ChatView, ChoicePicker, TopBar } from '../components'
 import { Button } from '../primitives'
 
 export type GameScreenProps = {

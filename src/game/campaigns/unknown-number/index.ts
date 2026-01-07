@@ -78,7 +78,7 @@ export const unknownNumberCampaign: Campaign = {
         },
         {
           id: 'choice-1b',
-          text: "Sorry, I think you have the wrong number",
+          text: 'Sorry, I think you have the wrong number',
           nextBeatId: 'wrong-number',
         },
         {
@@ -362,7 +362,7 @@ export const unknownNumberCampaign: Campaign = {
           id: 'msg-28',
           sender: 'system',
           type: 'system',
-          content: "You hear a creak from somewhere inside the house.",
+          content: 'You hear a creak from somewhere inside the house.',
           delay: 3000,
         },
       ],

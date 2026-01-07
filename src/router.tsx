@@ -1,15 +1,15 @@
 import {
-  createRouter,
+  createHashHistory,
   createRootRoute,
   createRoute,
-  createHashHistory,
+  createRouter,
   Outlet,
   useNavigate,
   useParams,
 } from '@tanstack/react-router'
 import { campaigns, getCampaign } from './game/campaigns'
-import { HomeScreen } from './ui/screens/home-screen'
 import { GameScreen } from './ui/screens/game-screen'
+import { HomeScreen } from './ui/screens/home-screen'
 
 const hashHistory = createHashHistory()
 
@@ -34,7 +34,10 @@ function HomeRouteComponent() {
     <HomeScreen
       campaigns={campaigns}
       onSelectCampaign={(campaign) =>
-        navigate({ to: '/play/$campaignId', params: { campaignId: campaign.id } })
+        navigate({
+          to: '/play/$campaignId',
+          params: { campaignId: campaign.id },
+        })
       }
     />
   )
