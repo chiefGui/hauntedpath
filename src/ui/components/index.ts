@@ -1,4 +1,5 @@
 export * from './campaign-card'
+export * from './campaign-detail-sheet'
 export * from './chat-view'
 export * from './choice-picker'
 export * from './message-bubble'
