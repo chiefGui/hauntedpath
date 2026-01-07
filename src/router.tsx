@@ -2,6 +2,7 @@ import {
   createRouter,
   createRootRoute,
   createRoute,
+  createHashHistory,
   Outlet,
   useNavigate,
   useParams,
@@ -10,7 +11,8 @@ import { campaigns, getCampaign } from './game/campaigns'
 import { HomeScreen } from './ui/screens/home-screen'
 import { GameScreen } from './ui/screens/game-screen'
 
-// Root layout
+const hashHistory = createHashHistory()
+
 const rootRoute = createRootRoute({
   component: () => (
     <div className="h-full max-w-md mx-auto bg-[--color-surface]">
@@ -19,7 +21,6 @@ const rootRoute = createRootRoute({
   ),
 })
 
-// Home route
 const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
@@ -39,7 +40,6 @@ function HomeRouteComponent() {
   )
 }
 
-// Game route
 const gameRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/play/$campaignId',
@@ -62,16 +62,14 @@ function GameRouteComponent() {
   return <GameScreen campaign={campaign} onBack={() => navigate({ to: '/' })} />
 }
 
-// Create route tree
 const routeTree = rootRoute.addChildren([homeRoute, gameRoute])
 
-// Create router instance
 export const router = createRouter({
   routeTree,
+  history: hashHistory,
   defaultPreload: 'intent',
 })
 
-// Type safety
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router
