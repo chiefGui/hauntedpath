@@ -15,7 +15,7 @@ export function GameScreen({ campaign, onBack }: GameScreenProps) {
   if (isLoading || !state) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-[--color-text-secondary]">Loading...</div>
+        <div className="text-muted-foreground">Loading...</div>
       </div>
     )
   }
@@ -31,8 +31,8 @@ export function GameScreen({ campaign, onBack }: GameScreenProps) {
       <ChatView campaign={campaign} state={state} />
 
       {isEnding ? (
-        <div className="flex flex-col gap-3 p-4 bg-[--color-surface-elevated] border-t border-[--color-surface-tertiary]">
-          <p className="text-center text-sm text-[--color-text-secondary]">
+        <div className="flex flex-col gap-3 p-4 bg-card border-t border-border">
+          <p className="text-center text-sm text-muted-foreground">
             End of story
           </p>
           <div className="flex gap-2">

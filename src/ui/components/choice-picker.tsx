@@ -15,7 +15,7 @@ export function ChoicePicker({
   if (choices.length === 0) return null
 
   return (
-    <div className="flex flex-col gap-2 p-4 bg-[--color-surface-elevated] border-t border-[--color-surface-tertiary]">
+    <div className="flex flex-col gap-2 p-4 bg-card border-t border-border animate-typing-appear">
       {choices.map((choice) => (
         <Button
           key={choice.id}

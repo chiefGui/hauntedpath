@@ -4,17 +4,14 @@ import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '../lib'
 
 const buttonVariants = tv({
-  base: 'inline-flex items-center justify-center rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
+  base: 'inline-flex items-center justify-center rounded-xl font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 disabled:cursor-not-allowed',
   variants: {
     variant: {
-      primary:
-        'bg-[--color-accent] text-white hover:bg-[--color-accent-hover] active:bg-[--color-accent-hover]',
-      secondary:
-        'bg-[--color-surface-secondary] text-[--color-text-primary] hover:bg-[--color-surface-tertiary] active:bg-[--color-surface-tertiary]',
-      ghost:
-        'bg-transparent text-[--color-accent] hover:bg-[--color-surface-secondary] active:bg-[--color-surface-secondary]',
+      primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
+      secondary: 'bg-secondary text-secondary-foreground hover:bg-muted',
+      ghost: 'bg-transparent text-primary hover:bg-secondary',
       destructive:
-        'bg-[--color-destructive] text-white hover:opacity-90 active:opacity-90',
+        'bg-destructive text-destructive-foreground hover:bg-destructive/90',
     },
     size: {
       sm: 'px-3 py-1.5 text-sm',

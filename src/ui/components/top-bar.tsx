@@ -19,7 +19,7 @@ export function TopBar({
     : (characters[0]?.name ?? 'Unknown')
 
   return (
-    <div className="flex items-center gap-3 px-4 py-3 bg-[--color-surface-elevated] border-b border-[--color-surface-tertiary]">
+    <div className="flex items-center gap-3 px-4 py-3 bg-card border-b border-border">
       <Button onClick={onBack} variant="ghost" size="icon">
         <svg
           width="12"
@@ -47,7 +47,7 @@ export function TopBar({
                 src={char.avatar}
                 alt={char.name}
                 size="md"
-                className="border-2 border-[--color-surface-elevated]"
+                className="border-2 border-card"
                 style={{ zIndex: 3 - i }}
               />
             ))}
@@ -65,7 +65,7 @@ export function TopBar({
       <div className="flex-1 min-w-0">
         <h1 className="text-[17px] font-semibold truncate">{displayName}</h1>
         {isGroup && (
-          <p className="text-xs text-[--color-text-secondary] truncate">
+          <p className="text-xs text-muted-foreground truncate">
             {characters.length} people
           </p>
         )}

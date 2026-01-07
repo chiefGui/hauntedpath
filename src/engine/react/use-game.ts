@@ -12,8 +12,8 @@ import {
   setTyping,
 } from '../story-engine'
 
-const DEFAULT_TYPING_DELAY = 1500
-const DEFAULT_MESSAGE_DELAY = 800
+const DEFAULT_TYPING_DELAY = 800
+const DEFAULT_MESSAGE_DELAY = 400
 
 export type UseGameOptions = {
   autoSave?: boolean
@@ -23,9 +23,10 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
   const { autoSave = true } = options
   const [state, setState] = useState<GameState | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const processingRef = useRef(false)
+  const [isProcessing, setIsProcessing] = useState(false)
   const timeoutsRef = useRef<number[]>([])
 
+  // Initialize game state
   useEffect(() => {
     async function init() {
       const saved = await loadGame(campaign.id)
@@ -39,46 +40,53 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
     init()
   }, [campaign.id])
 
+  // Auto-save
   useEffect(() => {
     if (!autoSave || !state || isLoading) return
     saveGame(campaign.id, state)
   }, [campaign.id, state, autoSave, isLoading])
 
+  // Process pending messages one at a time
   useEffect(() => {
-    if (!state || processingRef.current) return
+    if (!state || isProcessing) return
 
     const pending = getPendingMessages(campaign, state)
     if (pending.length === 0) return
 
-    processingRef.current = true
+    setIsProcessing(true)
     const nextMessage = pending[0]
 
     if (nextMessage.sender !== 'system') {
+      // Show typing indicator
       setState((s) => (s ? setTyping(s, true) : s))
 
       const typingDelay = nextMessage.delay ?? DEFAULT_TYPING_DELAY
       const typingTimeout = window.setTimeout(() => {
+        // Add the message and hide typing
         setState((s) => {
           if (!s) return s
           const withMessage = addDisplayedMessage(s, nextMessage)
           return setTyping(withMessage, false)
         })
 
+        // Wait before processing next message
         const nextTimeout = window.setTimeout(() => {
-          processingRef.current = false
+          setIsProcessing(false)
         }, DEFAULT_MESSAGE_DELAY)
         timeoutsRef.current.push(nextTimeout)
       }, typingDelay)
       timeoutsRef.current.push(typingTimeout)
     } else {
+      // System messages appear immediately
       setState((s) => (s ? addDisplayedMessage(s, nextMessage) : s))
       const nextTimeout = window.setTimeout(() => {
-        processingRef.current = false
-      }, nextMessage.delay ?? 500)
+        setIsProcessing(false)
+      }, nextMessage.delay ?? 300)
       timeoutsRef.current.push(nextTimeout)
     }
-  }, [campaign, state])
+  }, [campaign, state, isProcessing])
 
+  // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
       timeoutsRef.current.forEach((t) => clearTimeout(t))
@@ -88,8 +96,12 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
   const handleChoice = useCallback(
     (choice: Choice) => {
       if (!state) return
+      // Clear any pending timeouts
+      timeoutsRef.current.forEach((t) => clearTimeout(t))
+      timeoutsRef.current = []
+      // Update state with player's choice
       setState(selectChoice(campaign, state, choice))
-      processingRef.current = false
+      setIsProcessing(false)
     },
     [campaign, state],
   )
@@ -97,7 +109,7 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
   const restart = useCallback(async () => {
     timeoutsRef.current.forEach((t) => clearTimeout(t))
     timeoutsRef.current = []
-    processingRef.current = false
+    setIsProcessing(false)
     await deleteGame(campaign.id)
     setState(createInitialState(campaign))
   }, [campaign])
@@ -109,6 +121,7 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
   return {
     state,
     isLoading,
+    isProcessing,
     choices,
     currentBeat,
     isEnding: ending,

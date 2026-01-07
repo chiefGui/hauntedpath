@@ -1,5 +1,5 @@
 import type { Campaign, SavedGame } from '../../engine'
-import { Badge, Button } from '../primitives'
+import { Badge } from '../primitives'
 
 export type CampaignCardProps = {
   campaign: Campaign
@@ -15,9 +15,10 @@ export function CampaignCard({
   const hasProgress = !!savedGame
 
   return (
-    <Button
+    <button
+      type="button"
       onClick={() => onSelect(campaign)}
-      className="w-full text-left bg-[--color-surface-elevated] rounded-2xl overflow-hidden transition-transform active:scale-[0.98] p-0"
+      className="w-full text-left bg-card rounded-2xl overflow-hidden transition-transform active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <div className="relative aspect-[16/9] overflow-hidden">
         <img
@@ -37,10 +38,10 @@ export function CampaignCard({
       </div>
 
       <div className="p-4">
-        <p className="text-sm text-[--color-text-secondary] line-clamp-2">
+        <p className="text-sm text-muted-foreground line-clamp-2">
           {campaign.description}
         </p>
       </div>
-    </Button>
+    </button>
   )
 }

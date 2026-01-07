@@ -41,7 +41,7 @@ export function Avatar({
       {src ? (
         <img src={src} alt={alt ?? ''} className="w-full h-full object-cover" />
       ) : (
-        <div className="w-full h-full flex items-center justify-center bg-[--color-surface-tertiary] text-[--color-text-secondary] font-medium">
+        <div className="w-full h-full flex items-center justify-center bg-muted text-muted-foreground font-medium">
           {initials}
         </div>
       )}
