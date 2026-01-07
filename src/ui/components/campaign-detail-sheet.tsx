@@ -68,9 +68,9 @@ export function CampaignDetailSheet({
       {/* Sheet */}
       <div
         className={cn(
-          'absolute inset-x-0 bottom-0 max-h-[92vh] overflow-hidden',
+          'absolute inset-x-0 bottom-0 max-h-[92vh]',
           'bg-gradient-to-b from-card/95 to-background/98 backdrop-blur-2xl',
-          'rounded-t-3xl',
+          'rounded-t-3xl overflow-y-auto',
           'transition-transform duration-300 ease-out',
           isVisible ? 'translate-y-0' : 'translate-y-full'
         )}
@@ -116,7 +116,7 @@ export function CampaignDetailSheet({
         </div>
 
         {/* Content */}
-        <div className="px-6 pb-10 -mt-2">
+        <div className="px-6 pb-10 pt-4">
           {/* Meta badges */}
           {meta && (
             <div className="flex items-center gap-3 mb-4 flex-wrap">
