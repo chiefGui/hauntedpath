@@ -1,6 +1,14 @@
 import type { Beat } from './beat'
 import type { Character } from './character'
 
+export type CampaignMeta = {
+  genre: string[]
+  duration: string
+  rating?: string
+  year?: number
+  longDescription: string
+}
+
 export type Campaign = {
   id: string
   title: string
@@ -11,6 +19,7 @@ export type Campaign = {
   beats: Record<string, Beat>
   startBeatId: string
   isGroup?: boolean
+  meta?: CampaignMeta
 }
 
 export class CampaignService {
