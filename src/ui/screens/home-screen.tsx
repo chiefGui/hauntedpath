@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { Campaign, SavedGame } from '../../engine'
-import { getAllSavedGames } from '../../engine'
+import { deleteGame, getAllSavedGames } from '../../engine'
 import { CampaignDetailSheet } from '../components'
 import { Badge } from '../primitives'
 import { cn } from '../lib'
@@ -31,6 +31,13 @@ export function HomeScreen({ campaigns, onSelectCampaign }: HomeScreenProps) {
   }
 
   const handlePlay = (campaign: Campaign) => {
+    setSelectedCampaign(null)
+    onSelectCampaign(campaign)
+  }
+
+  const handleStartOver = async (campaign: Campaign) => {
+    await deleteGame(campaign.id)
+    setSavedGames((prev) => prev.filter((sg) => sg.campaignId !== campaign.id))
     setSelectedCampaign(null)
     onSelectCampaign(campaign)
   }
@@ -146,6 +153,7 @@ export function HomeScreen({ campaigns, onSelectCampaign }: HomeScreenProps) {
         campaign={selectedCampaign}
         savedGame={selectedCampaign ? getSavedGame(selectedCampaign.id) : null}
         onPlay={handlePlay}
+        onStartOver={handleStartOver}
         onClose={handleCloseSheet}
       />
     </div>

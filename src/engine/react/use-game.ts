@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { deleteGame, loadGame, saveGame } from '../persistence'
 import type { Campaign, Choice, GameState } from '../services'
-import { GameStateService } from '../services'
+import { GameStateService, SAVE_VERSION } from '../services'
 
 const DEFAULT_TYPING_DELAY = 800
 const DEFAULT_MESSAGE_DELAY = 400
@@ -22,12 +22,12 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
     async function init() {
       const saved = await loadGame(campaign.id)
 
-      // If save exists but is incompatible, delete it and start fresh
-      if (saved && (!saved.state.presence || !saved.state.choicePrompts)) {
+      // If save exists but is outdated, delete it and start fresh
+      if (saved && saved.state.version !== SAVE_VERSION) {
         await deleteGame(campaign.id)
       }
 
-      const validSave = saved?.state.presence && saved?.state.choicePrompts
+      const validSave = saved?.state.version === SAVE_VERSION
 
       if (validSave) {
         setState(saved.state)

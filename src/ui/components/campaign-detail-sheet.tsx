@@ -7,6 +7,7 @@ export type CampaignDetailSheetProps = {
   campaign: Campaign | null
   savedGame?: SavedGame | null
   onPlay: (campaign: Campaign) => void
+  onStartOver: (campaign: Campaign) => void
   onClose: () => void
 }
 
@@ -14,6 +15,7 @@ export function CampaignDetailSheet({
   campaign,
   savedGame,
   onPlay,
+  onStartOver,
   onClose,
 }: CampaignDetailSheetProps) {
   const [isVisible, setIsVisible] = useState(false)
@@ -68,7 +70,7 @@ export function CampaignDetailSheet({
         className={cn(
           'absolute inset-x-0 bottom-0 max-h-[92vh]',
           'bg-gradient-to-b from-card/95 to-background/98 backdrop-blur-2xl',
-          'rounded-t-3xl',
+          'rounded-t-3xl overflow-y-auto',
           'transition-transform duration-300 ease-out',
           'flex flex-col overflow-hidden',
           isVisible ? 'translate-y-0' : 'translate-y-full',
@@ -206,7 +208,7 @@ export function CampaignDetailSheet({
                 variant="ghost"
                 size="md"
                 className="w-full mt-2 text-muted-foreground"
-                onClick={handlePlay}
+                onClick={() => campaign && onStartOver(campaign)}
               >
                 Start Over
               </Button>

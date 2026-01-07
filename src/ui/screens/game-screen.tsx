@@ -10,8 +10,15 @@ export type GameScreenProps = {
 }
 
 export function GameScreen({ campaign, onBack }: GameScreenProps) {
-  const { state, isLoading, isEnding, handleChoice, restart, getPresence } =
-    useGame(campaign)
+  const {
+    state,
+    isLoading,
+    isProcessing,
+    isEnding,
+    handleChoice,
+    restart,
+    getPresence,
+  } = useGame(campaign)
   const { accentColor, setAccentColor } = useSettings()
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -43,7 +50,7 @@ export function GameScreen({ campaign, onBack }: GameScreenProps) {
         onChoiceSelect={handleChoice}
       />
 
-      {isEnding && (
+      {isEnding && !isProcessing && !state.isTyping && (
         <div className="flex flex-col gap-3 p-4 bg-card border-t border-border">
           <p className="text-center text-sm text-muted-foreground">
             End of story
