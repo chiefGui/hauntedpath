@@ -1,5 +1,5 @@
 import { type IDBPDatabase, openDB } from 'idb'
-import type { GameState } from './story-engine'
+import type { GameState } from './services'
 
 export type SavedGame = {
   id: string
@@ -81,4 +81,9 @@ export async function deleteGame(campaignId: string): Promise<void> {
 export async function getAllSavedGames(): Promise<SavedGame[]> {
   const db = await getDB()
   return db.getAll(STORE_NAME)
+}
+
+export async function clearAllData(): Promise<void> {
+  const db = await getDB()
+  await db.clear(STORE_NAME)
 }
