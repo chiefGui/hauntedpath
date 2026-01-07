@@ -1,11 +1,13 @@
-import type { Character } from '../../engine'
+import type { Character, CharacterPresence } from '../../engine'
 import { Avatar, Button } from '../primitives'
+import { formatLastSeen } from '../lib'
 
 export type TopBarProps = {
   characters: Character[]
   isGroup?: boolean
   groupName?: string
   isTyping?: boolean
+  presence?: CharacterPresence | null
   onBack: () => void
 }
 
@@ -14,20 +16,28 @@ export function TopBar({
   isGroup = false,
   groupName,
   isTyping = false,
+  presence,
   onBack,
 }: TopBarProps) {
+  const primaryCharacter = characters[0]
   const displayName = isGroup
     ? (groupName ?? characters.map((c) => c.name).join(', '))
-    : (characters[0]?.name ?? 'Unknown')
+    : (primaryCharacter?.name ?? 'Unknown')
 
-  const primaryCharacter = characters[0]
-  const status = primaryCharacter?.status
-
-  const getStatusText = () => {
+  const getStatusText = (): string | null => {
+    // Typing always takes priority
     if (isTyping) return 'typing...'
+
+    // Group chat shows participant count
     if (isGroup) return `${characters.length} people`
-    if (status === 'online') return 'online'
-    if (status === 'away') return 'away'
+
+    // Use presence if available
+    if (presence) {
+      if (presence.status === 'online') return 'online'
+      if (presence.status === 'away') return 'away'
+      if (presence.lastSeenAt) return formatLastSeen(presence.lastSeenAt)
+    }
+
     return null
   }
 
