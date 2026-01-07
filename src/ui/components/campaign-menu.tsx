@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import type { AccentColor, AccentColorConfig, Character } from '../../engine'
 import { accentColors, clearAllData } from '../../engine'
-import { Avatar, Button, Drawer } from '../primitives'
+import { Avatar, Drawer } from '../primitives'
 import { cn } from '../lib'
 
 type CampaignMenuProps = {
@@ -228,7 +228,7 @@ function SettingsPanel({
         <div className="w-10" /> {/* Spacer for alignment */}
       </Drawer.Header>
 
-      <Drawer.Body className="space-y-8">
+      <Drawer.Body className="flex flex-col">
         {/* Accent Color */}
         <section className="space-y-4">
           <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -246,24 +246,18 @@ function SettingsPanel({
           </div>
         </section>
 
-        {/* Danger Zone */}
-        <section className="space-y-4 pt-4 border-t border-border/50">
-          <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            Data
-          </h3>
-          <Button
-            variant="destructive"
-            size="sm"
-            className="w-full"
-            onClick={handleClearData}
-            disabled={isClearing}
-          >
-            {isClearing ? 'Clearing...' : 'Clear All Data'}
-          </Button>
-          <p className="text-xs text-muted-foreground/60">
-            Removes all saved progress and settings.
-          </p>
-        </section>
+        {/* Spacer pushes clear data to bottom */}
+        <div className="flex-1" />
+
+        {/* Clear Data - at very bottom, subtle */}
+        <button
+          type="button"
+          onClick={handleClearData}
+          disabled={isClearing}
+          className="text-xs text-muted-foreground/50 hover:text-destructive transition-colors py-4 disabled:opacity-50"
+        >
+          {isClearing ? 'Clearing...' : 'Clear All Data'}
+        </button>
       </Drawer.Body>
     </motion.div>
   )
@@ -284,18 +278,14 @@ function ColorOrb({ color, isSelected, onSelect }: ColorOrbProps) {
     >
       <div
         className={cn(
-          'w-12 h-12 rounded-full',
+          'w-11 h-11 rounded-full',
           'transition-all duration-200',
-          'shadow-lg',
           isSelected
             ? 'scale-110 ring-2 ring-white ring-offset-2 ring-offset-card'
             : 'hover:scale-105 active:scale-95',
         )}
         style={{
           background: `radial-gradient(circle at 30% 30%, ${color.primary}, ${color.accentHover})`,
-          boxShadow: isSelected
-            ? `0 0 20px ${color.primary}`
-            : `0 4px 12px rgba(0,0,0,0.3)`,
         }}
       />
       <span
