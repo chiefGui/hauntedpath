@@ -1,6 +1,7 @@
+import { useState } from 'react'
 import type { Campaign } from '../../engine'
-import { useGame } from '../../engine'
-import { ChatView, TopBar } from '../components'
+import { useGame, useSettings } from '../../engine'
+import { CampaignMenu, ChatView, TopBar } from '../components'
 import { Button } from '../primitives'
 
 export type GameScreenProps = {
@@ -11,6 +12,8 @@ export type GameScreenProps = {
 export function GameScreen({ campaign, onBack }: GameScreenProps) {
   const { state, isLoading, isEnding, handleChoice, restart, getPresence } =
     useGame(campaign)
+  const { accentColor, setAccentColor } = useSettings()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   if (isLoading || !state) {
     return (
@@ -31,6 +34,7 @@ export function GameScreen({ campaign, onBack }: GameScreenProps) {
         isTyping={state.isTyping}
         presence={presence}
         onBack={onBack}
+        onMenuOpen={() => setMenuOpen(true)}
       />
 
       <ChatView
@@ -54,6 +58,14 @@ export function GameScreen({ campaign, onBack }: GameScreenProps) {
           </div>
         </div>
       )}
+
+      <CampaignMenu
+        protagonist={campaign.protagonist}
+        open={menuOpen}
+        onOpenChange={setMenuOpen}
+        accentColor={accentColor}
+        onAccentColorChange={setAccentColor}
+      />
     </div>
   )
 }
