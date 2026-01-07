@@ -5,6 +5,8 @@ export type Character = {
   name: string
   avatar: string
   status?: ContactStatus
+  age?: number
+  bio?: string
 }
 
 export class CharacterService {

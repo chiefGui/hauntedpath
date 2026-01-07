@@ -48,8 +48,10 @@ export const unknownNumberCampaign: Campaign = {
   },
   protagonist: {
     id: 'player',
-    name: 'You',
+    name: 'Alex',
     avatar: playerAvatar,
+    age: 24,
+    bio: 'Just moved into a new apartment downtown. Night owl by habit.',
   },
   characters: [
     {

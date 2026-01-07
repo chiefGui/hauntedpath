@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { Campaign, SavedGame } from '../../engine'
-import { Button, Badge } from '../primitives'
+import { Avatar, Badge, Button } from '../primitives'
 import { cn } from '../lib'
 
 export type CampaignDetailSheetProps = {
@@ -153,6 +153,39 @@ export function CampaignDetailSheet({
                   )}
                 </span>
               ))}
+            </div>
+          )}
+
+          {/* Protagonist Card */}
+          {campaign?.protagonist && (
+            <div className="mb-6 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-sm">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-3">
+                Play as
+              </p>
+              <div className="flex items-center gap-4">
+                <Avatar
+                  src={campaign.protagonist.avatar}
+                  alt={campaign.protagonist.name}
+                  fallback={campaign.protagonist.name}
+                  size="lg"
+                  className="ring-2 ring-white/10 ring-offset-2 ring-offset-transparent"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-foreground">
+                    {campaign.protagonist.name}
+                    {campaign.protagonist.age && (
+                      <span className="font-normal text-muted-foreground ml-1.5">
+                        {campaign.protagonist.age}
+                      </span>
+                    )}
+                  </p>
+                  {campaign.protagonist.bio && (
+                    <p className="text-sm text-muted-foreground/80 mt-0.5 line-clamp-2">
+                      {campaign.protagonist.bio}
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
           )}
 
