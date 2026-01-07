@@ -20,6 +20,15 @@ export type AccentColorConfig = {
 
 export const accentColors: AccentColorConfig[] = [
   {
+    id: 'sky',
+    name: 'Sky',
+    primary: 'oklch(62% 0.22 250)',
+    primaryForeground: 'oklch(100% 0 0)',
+    ring: 'oklch(62% 0.22 250)',
+    bubblePlayer: 'oklch(62% 0.22 250)',
+    accentHover: 'oklch(58% 0.20 250)',
+  },
+  {
     id: 'violet',
     name: 'Violet',
     primary: 'oklch(62% 0.24 290)',
@@ -56,15 +65,6 @@ export const accentColors: AccentColorConfig[] = [
     accentHover: 'oklch(65% 0.16 160)',
   },
   {
-    id: 'sky',
-    name: 'Sky',
-    primary: 'oklch(62% 0.22 250)',
-    primaryForeground: 'oklch(100% 0 0)',
-    ring: 'oklch(62% 0.22 250)',
-    bubblePlayer: 'oklch(62% 0.22 250)',
-    accentHover: 'oklch(58% 0.20 250)',
-  },
-  {
     id: 'slate',
     name: 'Slate',
     primary: 'oklch(55% 0.03 265)',
@@ -75,7 +75,7 @@ export const accentColors: AccentColorConfig[] = [
   },
 ]
 
-export const defaultAccentColor: AccentColor = 'violet'
+export const defaultAccentColor: AccentColor = 'sky'
 
 export type AppSettings = {
   id: 'app-settings'
