@@ -62,6 +62,8 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
 
     setIsProcessing(true)
     const nextItem = pending[0]
+    const beat = GameStateService.getCurrentBeat(campaign, state)
+    const beatAt = beat?.at
 
     // Messages from characters show typing indicator
     if (isMessage(nextItem)) {
@@ -71,7 +73,7 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
       const typingTimeout = window.setTimeout(() => {
         setState((s) => {
           if (!s) return s
-          const withItem = GameStateService.addItem(s, nextItem)
+          const withItem = GameStateService.addItem(s, nextItem, beatAt)
           return GameStateService.setTyping(withItem, false)
         })
 
@@ -83,7 +85,7 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
       timeoutsRef.current.push(typingTimeout)
     } else {
       // Events appear immediately (no typing indicator)
-      setState((s) => (s ? GameStateService.addItem(s, nextItem) : s))
+      setState((s) => (s ? GameStateService.addItem(s, nextItem, beatAt) : s))
       const nextTimeout = window.setTimeout(() => {
         setIsProcessing(false)
       }, nextItem.delay ?? 300)

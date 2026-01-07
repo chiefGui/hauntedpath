@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { Fragment, useEffect, useRef } from 'react'
 import type {
   Campaign,
   Choice,
@@ -7,14 +7,19 @@ import type {
   DisplayedMessage,
   GameState,
 } from '../../engine'
-import { CampaignService, ChoiceType, isDisplayedEvent } from '../../engine'
+import {
+  CampaignService,
+  ChoiceType,
+  isDisplayedEvent,
+  StoryTimeService,
+} from '../../engine'
 import { Bubble } from '../primitives'
 import { ChoicePicker } from './choice-picker'
 import { MessageBubble } from './message-bubble'
 import { TypingIndicator } from './typing-indicator'
 
 type TimelineItem =
-  | { type: 'item'; data: DisplayedItem; timestamp: number }
+  | { type: 'item'; data: DisplayedItem; timestamp: number; storyTime?: number }
   | { type: 'choice'; data: ChoicePrompt; timestamp: number }
 
 export type ChatViewProps = {
@@ -37,6 +42,7 @@ export function ChatView({ campaign, state, onChoiceSelect }: ChatViewProps) {
       type: 'item' as const,
       data: item,
       timestamp: item.timestamp,
+      storyTime: item.storyTime,
     })),
     ...state.choicePrompts.map((prompt) => ({
       type: 'choice' as const,
@@ -47,21 +53,43 @@ export function ChatView({ campaign, state, onChoiceSelect }: ChatViewProps) {
 
   // Track previous message for spacing logic
   let prevMessage: DisplayedMessage | null = null
+  let prevStoryTime: number | undefined
 
   const typingCharacter = campaign.characters[0] ?? null
 
   return (
     <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
       {timeline.map((timelineItem) => {
+        // Check if we need to show a time header
+        const storyTime = timelineItem.type === 'item' ? timelineItem.storyTime : undefined
+        const showTimeHeader = storyTime !== undefined && storyTime !== prevStoryTime
+        const timeHeader = showTimeHeader
+          ? StoryTimeService.format(
+              new Date(storyTime),
+              prevStoryTime ? new Date(prevStoryTime) : undefined,
+            )
+          : null
+
+        if (storyTime !== undefined) {
+          prevStoryTime = storyTime
+        }
+
         if (timelineItem.type === 'item') {
           const displayedItem = timelineItem.data
 
           // Handle events (narrative happenings) - rendered as centered text
           if (isDisplayedEvent(displayedItem)) {
             return (
-              <Bubble.System key={displayedItem.id} className="animate-message-appear">
-                {displayedItem.content}
-              </Bubble.System>
+              <Fragment key={displayedItem.id}>
+                {timeHeader && (
+                  <div className="text-center text-xs text-gray-500 py-2 animate-message-appear">
+                    {timeHeader}
+                  </div>
+                )}
+                <Bubble.System className="animate-message-appear">
+                  {displayedItem.content}
+                </Bubble.System>
+              </Fragment>
             )
           }
 
@@ -81,18 +109,22 @@ export function ChatView({ campaign, state, onChoiceSelect }: ChatViewProps) {
           prevMessage = message
 
           return (
-            <div
-              key={message.id}
-              className={needsExtraSpace ? 'mt-3' : undefined}
-            >
-              <MessageBubble
-                message={message}
-                character={character}
-                isPlayer={isPlayer}
-                showAvatar={isFirstFromSender}
-                isGroup={campaign.isGroup}
-              />
-            </div>
+            <Fragment key={message.id}>
+              {timeHeader && (
+                <div className="text-center text-xs text-gray-500 py-2 animate-message-appear">
+                  {timeHeader}
+                </div>
+              )}
+              <div className={needsExtraSpace ? 'mt-3' : undefined}>
+                <MessageBubble
+                  message={message}
+                  character={character}
+                  isPlayer={isPlayer}
+                  showAvatar={isFirstFromSender}
+                  isGroup={campaign.isGroup}
+                />
+              </div>
+            </Fragment>
           )
         }
 

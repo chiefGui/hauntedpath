@@ -13,6 +13,7 @@ export type MessageItem = {
   sender: string
   content: string
   delay?: number
+  at?: string // e.g., "2:47 AM", "+5m" - overrides beat's at
 }
 
 // Event: narrative happening (centered text, not a bubble)
@@ -21,6 +22,7 @@ export type EventItem = {
   id: string
   content: string
   delay?: number
+  at?: string // e.g., "2:47 AM", "+5m" - overrides beat's at
 }
 
 // Union type for beat items
@@ -36,7 +38,8 @@ export type DisplayedMessage = {
   kind: typeof BeatItemKind.Message
   sender: string
   content: string
-  timestamp: number
+  timestamp: number // runtime timestamp for ordering
+  storyTime?: number // in-story time (parsed from at field)
   status: MessageStatus
 }
 
@@ -45,7 +48,8 @@ export type DisplayedEvent = {
   itemId: string
   kind: typeof BeatItemKind.Event
   content: string
-  timestamp: number
+  timestamp: number // runtime timestamp for ordering
+  storyTime?: number // in-story time (parsed from at field)
 }
 
 export type DisplayedItem = DisplayedMessage | DisplayedEvent
@@ -68,7 +72,10 @@ export function isDisplayedEvent(item: DisplayedItem): item is DisplayedEvent {
 }
 
 export class MessageService {
-  static createDisplayedMessage(item: MessageItem): DisplayedMessage {
+  static createDisplayedMessage(
+    item: MessageItem,
+    storyTime?: number,
+  ): DisplayedMessage {
     return {
       id: crypto.randomUUID(),
       itemId: item.id,
@@ -76,25 +83,30 @@ export class MessageService {
       sender: item.sender,
       content: item.content,
       timestamp: Date.now(),
+      storyTime,
       status: 'delivered',
     }
   }
 
-  static createDisplayedEvent(item: EventItem): DisplayedEvent {
+  static createDisplayedEvent(
+    item: EventItem,
+    storyTime?: number,
+  ): DisplayedEvent {
     return {
       id: crypto.randomUUID(),
       itemId: item.id,
       kind: BeatItemKind.Event,
       content: item.content,
       timestamp: Date.now(),
+      storyTime,
     }
   }
 
-  static createDisplayed(item: BeatItem): DisplayedItem {
+  static createDisplayed(item: BeatItem, storyTime?: number): DisplayedItem {
     if (isMessage(item)) {
-      return this.createDisplayedMessage(item)
+      return this.createDisplayedMessage(item, storyTime)
     }
-    return this.createDisplayedEvent(item)
+    return this.createDisplayedEvent(item, storyTime)
   }
 
   static createPlayerMessage(content: string, choiceId: string): DisplayedMessage {

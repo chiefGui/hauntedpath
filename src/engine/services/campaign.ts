@@ -9,6 +9,10 @@ export type CampaignMeta = {
   longDescription: string
 }
 
+export type Story = {
+  start: string // e.g., "Jan 7, 2026, 2:45 AM"
+}
+
 export type Campaign = {
   id: string
   title: string
@@ -20,6 +24,7 @@ export type Campaign = {
   startBeatId: string
   isGroup?: boolean
   meta?: CampaignMeta
+  story?: Story
 }
 
 export class CampaignService {

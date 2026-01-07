@@ -65,20 +65,18 @@ export const unknownNumberCampaign: Campaign = {
       avatar: unknownAvatar,
     },
   ],
+  story: {
+    start: 'Jan 7, 2026, 2:45 AM',
+  },
   startBeatId: 'start',
   beats: {
     start: {
       id: 'start',
+      at: '2:47 AM',
       presenceChanges: {
         unknown: { status: ContactStatus.Online },
       },
       items: [
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-1',
-          content: '2:47 AM',
-          delay: 500,
-        },
         {
           kind: BeatItemKind.Message,
           id: 'msg-2',
@@ -363,7 +361,8 @@ export const unknownNumberCampaign: Campaign = {
         {
           kind: BeatItemKind.Event,
           id: 'msg-25',
-          content: '3:15 AM - A new message from a different number.',
+          at: '3:15 AM',
+          content: 'A new message from a different number.',
           delay: 3000,
         },
         {

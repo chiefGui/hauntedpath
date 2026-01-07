@@ -7,9 +7,10 @@ import type { BeatItem, DisplayedItem } from './message'
 import { MessageService } from './message'
 import type { CharacterPresence } from './presence'
 import { ContactStatus, PresenceService } from './presence'
+import { StoryTimeService } from './story-time'
 
 // Bump this when GameState shape changes - old saves will be deleted
-export const SAVE_VERSION = 2
+export const SAVE_VERSION = 3
 
 export type GameState = {
   version: number
@@ -22,6 +23,7 @@ export type GameState = {
   startedAt: number
   lastPlayedAt: number
   presence: Record<string, CharacterPresence>
+  storyTime?: number // current story time as timestamp
 }
 
 export class GameStateService {
@@ -35,6 +37,15 @@ export class GameStateService {
       )
     }
 
+    // Initialize story time from campaign
+    let storyTime: number | undefined
+    if (campaign.story?.start) {
+      const parsed = StoryTimeService.parseStart(campaign.story.start)
+      if (parsed) {
+        storyTime = parsed.getTime()
+      }
+    }
+
     return {
       version: SAVE_VERSION,
       campaignId: campaign.id,
@@ -46,6 +57,7 @@ export class GameStateService {
       startedAt: now,
       lastPlayedAt: now,
       presence,
+      storyTime,
     }
   }
 
@@ -84,14 +96,34 @@ export class GameStateService {
     return { ...state, isTyping }
   }
 
-  static addItem(state: GameState, item: BeatItem): GameState {
+  static addItem(
+    state: GameState,
+    item: BeatItem,
+    beatAt?: string,
+  ): GameState {
+    let storyTime = state.storyTime
+    let itemStoryTime: number | undefined
+
+    // Parse story time if item or beat has an 'at' field
+    const atString = item.at ?? beatAt
+    if (atString && storyTime !== undefined) {
+      const context = {
+        current: new Date(storyTime),
+        baseYear: new Date(storyTime).getFullYear(),
+      }
+      const parsed = StoryTimeService.parse(atString, context)
+      itemStoryTime = parsed.getTime()
+      storyTime = itemStoryTime
+    }
+
     return {
       ...state,
       displayedItems: [
         ...state.displayedItems,
-        MessageService.createDisplayed(item),
+        MessageService.createDisplayed(item, itemStoryTime),
       ],
       lastPlayedAt: Date.now(),
+      storyTime,
     }
   }
 
