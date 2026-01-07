@@ -1,4 +1,9 @@
-import { ChoiceType, ContactStatus, type Campaign } from '../../../engine'
+import {
+  BeatItemKind,
+  ChoiceType,
+  ContactStatus,
+  type Campaign,
+} from '../../../engine'
 
 // Simple avatar placeholder - a dark silhouette
 const unknownAvatar = `data:image/svg+xml,${encodeURIComponent(`
@@ -67,18 +72,17 @@ export const unknownNumberCampaign: Campaign = {
       presenceChanges: {
         unknown: { status: ContactStatus.Online },
       },
-      messages: [
+      items: [
         {
+          kind: BeatItemKind.Event,
           id: 'msg-1',
-          sender: 'system',
-          type: 'system',
           content: '2:47 AM',
           delay: 500,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-2',
           sender: 'unknown',
-          type: 'text',
           content: 'Are you awake?',
           delay: 2000,
         },
@@ -103,25 +107,25 @@ export const unknownNumberCampaign: Campaign = {
     },
     'who-is-this': {
       id: 'who-is-this',
-      messages: [
+      items: [
         {
+          kind: BeatItemKind.Message,
           id: 'msg-3',
           sender: 'unknown',
-          type: 'text',
           content: "You don't remember me?",
           delay: 3000,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-4',
           sender: 'unknown',
-          type: 'text',
           content: 'I remember you.',
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-5',
           sender: 'unknown',
-          type: 'text',
           content: 'I remember your face when you sleep.',
           delay: 2500,
         },
@@ -141,25 +145,25 @@ export const unknownNumberCampaign: Campaign = {
     },
     'wrong-number': {
       id: 'wrong-number',
-      messages: [
+      items: [
         {
+          kind: BeatItemKind.Message,
           id: 'msg-6',
           sender: 'unknown',
-          type: 'text',
           content: "No, I don't.",
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-7',
           sender: 'unknown',
-          type: 'text',
           content: 'I know exactly who you are.',
           delay: 2500,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-8',
           sender: 'unknown',
-          type: 'text',
           content: 'Nice pajamas, by the way.',
           delay: 3000,
         },
@@ -181,25 +185,25 @@ export const unknownNumberCampaign: Campaign = {
     },
     'rude-response': {
       id: 'rude-response',
-      messages: [
+      items: [
         {
+          kind: BeatItemKind.Message,
           id: 'msg-9',
           sender: 'unknown',
-          type: 'text',
           content: "That's not very nice.",
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-10',
           sender: 'unknown',
-          type: 'text',
           content: "Especially after I've been watching you all night.",
           delay: 3000,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-11',
           sender: 'unknown',
-          type: 'text',
           content: 'You should be nicer to your guests.',
           delay: 2500,
         },
@@ -220,18 +224,18 @@ export const unknownNumberCampaign: Campaign = {
     },
     'not-funny': {
       id: 'not-funny',
-      messages: [
+      items: [
         {
+          kind: BeatItemKind.Message,
           id: 'msg-12',
           sender: 'unknown',
-          type: 'text',
           content: "I'm not laughing.",
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-13',
           sender: 'unknown',
-          type: 'text',
           content: 'Check your closet.',
           delay: 4000,
         },
@@ -256,39 +260,37 @@ export const unknownNumberCampaign: Campaign = {
       presenceChanges: {
         unknown: { status: ContactStatus.Offline },
       },
-      messages: [
+      items: [
         {
+          kind: BeatItemKind.Message,
           id: 'msg-14',
           sender: 'unknown',
-          type: 'text',
           content: 'Go ahead.',
           delay: 1500,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-15',
           sender: 'unknown',
-          type: 'text',
           content: "By the time they arrive, I'll be gone.",
           delay: 2500,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-16',
           sender: 'unknown',
-          type: 'text',
           content: 'But I always come back.',
           delay: 3000,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-17',
-          sender: 'system',
-          type: 'system',
           content: 'The messages stop. You call the police. They find nothing.',
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-18',
-          sender: 'system',
-          type: 'system',
           content: "But you can't shake the feeling you're being watched.",
           delay: 2000,
         },
@@ -298,32 +300,29 @@ export const unknownNumberCampaign: Campaign = {
     },
     'look-window': {
       id: 'look-window',
-      messages: [
+      items: [
         {
+          kind: BeatItemKind.Event,
           id: 'msg-19',
-          sender: 'system',
-          type: 'system',
           content: 'You slowly approach the window and pull back the curtain.',
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-20',
-          sender: 'system',
-          type: 'system',
           content: 'Nothing. Just the empty street below.',
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-21',
           sender: 'unknown',
-          type: 'text',
           content: 'Not that window.',
           delay: 3000,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-22',
-          sender: 'system',
-          type: 'system',
           content: 'Your blood runs cold.',
           delay: 2000,
         },
@@ -348,46 +347,42 @@ export const unknownNumberCampaign: Campaign = {
       presenceChanges: {
         unknown: { status: ContactStatus.Online },
       },
-      messages: [
+      items: [
         {
+          kind: BeatItemKind.Event,
           id: 'msg-23',
-          sender: 'system',
-          type: 'system',
           content: 'You block the number.',
           delay: 1000,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-24',
-          sender: 'system',
-          type: 'system',
           content: 'Silence. You try to sleep.',
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-25',
-          sender: 'system',
-          type: 'system',
           content: '3:15 AM - A new message from a different number.',
           delay: 3000,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-26',
           sender: 'unknown',
-          type: 'text',
           content: "That wasn't very nice.",
           delay: 2500,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-27',
           sender: 'unknown',
-          type: 'text',
           content: "I don't like being ignored.",
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-28',
-          sender: 'system',
-          type: 'system',
           content: 'You hear a creak from somewhere inside the house.',
           delay: 3000,
         },
@@ -400,39 +395,36 @@ export const unknownNumberCampaign: Campaign = {
       presenceChanges: {
         unknown: { status: ContactStatus.Offline },
       },
-      messages: [
+      items: [
         {
+          kind: BeatItemKind.Event,
           id: 'msg-29',
-          sender: 'system',
-          type: 'system',
           content: 'You quietly get up and check the front door.',
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-30',
-          sender: 'system',
-          type: 'system',
           content: 'Locked.',
           delay: 1500,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-31',
-          sender: 'system',
-          type: 'system',
           content: 'You check the back door.',
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-32',
           sender: 'unknown',
-          type: 'text',
           content: "Don't bother.",
           delay: 1000,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-33',
           sender: 'unknown',
-          type: 'text',
           content: "I'm already inside.",
           delay: 3000,
         },
@@ -442,46 +434,41 @@ export const unknownNumberCampaign: Campaign = {
     },
     'ending-closet': {
       id: 'ending-closet',
-      messages: [
+      items: [
         {
+          kind: BeatItemKind.Event,
           id: 'msg-34',
-          sender: 'system',
-          type: 'system',
           content: 'Your hand trembles as you reach for the closet door.',
           delay: 2500,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-35',
-          sender: 'system',
-          type: 'system',
           content: 'You pull it open.',
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-36',
-          sender: 'system',
-          type: 'system',
           content: 'Empty. Just clothes.',
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-37',
-          sender: 'system',
-          type: 'system',
           content: 'You exhale with relief.',
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-38',
           sender: 'unknown',
-          type: 'text',
           content: 'Behind you.',
           delay: 3000,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-39',
-          sender: 'system',
-          type: 'system',
           content: 'Your phone clatters to the floor.',
           delay: 2000,
         },
@@ -491,46 +478,43 @@ export const unknownNumberCampaign: Campaign = {
     },
     'ending-run': {
       id: 'ending-run',
-      messages: [
+      items: [
         {
+          kind: BeatItemKind.Event,
           id: 'msg-40',
-          sender: 'system',
-          type: 'system',
           content: 'You bolt for the door.',
           delay: 1500,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-41',
-          sender: 'system',
-          type: 'system',
           content: 'Down the stairs. Out the front door. Into the night.',
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-42',
-          sender: 'system',
-          type: 'system',
           content: "You keep running. You don't look back.",
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-43',
           sender: 'unknown',
-          type: 'text',
           content: 'You can run.',
           delay: 3000,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-44',
           sender: 'unknown',
-          type: 'text',
           content: "But you'll have to come home eventually.",
           delay: 2500,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-45',
           sender: 'unknown',
-          type: 'text',
           content: "I'll be waiting.",
           delay: 3000,
         },
@@ -540,39 +524,34 @@ export const unknownNumberCampaign: Campaign = {
     },
     'ending-turn': {
       id: 'ending-turn',
-      messages: [
+      items: [
         {
+          kind: BeatItemKind.Event,
           id: 'msg-46',
-          sender: 'system',
-          type: 'system',
           content: 'You turn around slowly.',
           delay: 2500,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-47',
-          sender: 'system',
-          type: 'system',
           content: 'The bedroom is empty.',
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-48',
-          sender: 'system',
-          type: 'system',
           content: 'But the closet door is now open.',
           delay: 2500,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-49',
-          sender: 'system',
-          type: 'system',
           content: 'It was closed before.',
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-50',
-          sender: 'system',
-          type: 'system',
           content: "Wasn't it?",
           delay: 2000,
         },
@@ -582,46 +561,42 @@ export const unknownNumberCampaign: Campaign = {
     },
     'ending-sprint': {
       id: 'ending-sprint',
-      messages: [
+      items: [
         {
+          kind: BeatItemKind.Event,
           id: 'msg-51',
-          sender: 'system',
-          type: 'system',
           content: 'You sprint for the bedroom door.',
           delay: 1500,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-52',
-          sender: 'system',
-          type: 'system',
           content: "It won't open.",
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-53',
-          sender: 'system',
-          type: 'system',
           content: 'You pull harder. Nothing.',
           delay: 2000,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-54',
           sender: 'unknown',
-          type: 'text',
           content: 'I locked it.',
           delay: 2500,
         },
         {
+          kind: BeatItemKind.Message,
           id: 'msg-55',
           sender: 'unknown',
-          type: 'text',
           content: 'From the inside.',
           delay: 3000,
         },
         {
+          kind: BeatItemKind.Event,
           id: 'msg-56',
-          sender: 'system',
-          type: 'system',
           content: 'The lights go out.',
           delay: 2000,
         },

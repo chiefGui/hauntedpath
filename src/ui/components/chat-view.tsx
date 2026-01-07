@@ -3,16 +3,18 @@ import type {
   Campaign,
   Choice,
   ChoicePrompt,
+  DisplayedItem,
   DisplayedMessage,
   GameState,
 } from '../../engine'
-import { CampaignService, ChoiceType } from '../../engine'
+import { CampaignService, ChoiceType, isDisplayedEvent } from '../../engine'
+import { Bubble } from '../primitives'
 import { ChoicePicker } from './choice-picker'
 import { MessageBubble } from './message-bubble'
 import { TypingIndicator } from './typing-indicator'
 
 type TimelineItem =
-  | { type: 'message'; data: DisplayedMessage; timestamp: number }
+  | { type: 'item'; data: DisplayedItem; timestamp: number }
   | { type: 'choice'; data: ChoicePrompt; timestamp: number }
 
 export type ChatViewProps = {
@@ -27,14 +29,14 @@ export function ChatView({ campaign, state, onChoiceSelect }: ChatViewProps) {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [state.displayedMessages.length, state.choicePrompts.length, state.isTyping])
+  }, [state.displayedItems.length, state.choicePrompts.length, state.isTyping])
 
-  // Build unified timeline of messages and choice prompts
+  // Build unified timeline of items and choice prompts
   const timeline: TimelineItem[] = [
-    ...state.displayedMessages.map((msg) => ({
-      type: 'message' as const,
-      data: msg,
-      timestamp: msg.timestamp,
+    ...state.displayedItems.map((item) => ({
+      type: 'item' as const,
+      data: item,
+      timestamp: item.timestamp,
     })),
     ...state.choicePrompts.map((prompt) => ({
       type: 'choice' as const,
@@ -50,24 +52,31 @@ export function ChatView({ campaign, state, onChoiceSelect }: ChatViewProps) {
 
   return (
     <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
-      {timeline.map((item) => {
-        if (item.type === 'message') {
-          const message = item.data
+      {timeline.map((timelineItem) => {
+        if (timelineItem.type === 'item') {
+          const displayedItem = timelineItem.data
+
+          // Handle events (narrative happenings) - rendered as centered text
+          if (isDisplayedEvent(displayedItem)) {
+            return (
+              <Bubble.System key={displayedItem.id} className="animate-message-appear">
+                {displayedItem.content}
+              </Bubble.System>
+            )
+          }
+
+          // Handle messages (character speech)
+          const message = displayedItem
           const character = CampaignService.getCharacter(campaign, message.sender)
           const isPlayer = message.sender === 'player'
-          const isSystem = message.sender === 'system'
 
           const isFirstFromSender =
             !prevMessage || prevMessage.sender !== message.sender
 
           // Add extra space when switching between player and NPC messages
           const prevIsPlayer = prevMessage?.sender === 'player'
-          const prevIsSystem = prevMessage?.sender === 'system'
           const needsExtraSpace =
-            prevMessage &&
-            !isSystem &&
-            !prevIsSystem &&
-            ((isPlayer && !prevIsPlayer) || (!isPlayer && prevIsPlayer))
+            prevMessage && ((isPlayer && !prevIsPlayer) || (!isPlayer && prevIsPlayer))
 
           prevMessage = message
 
@@ -88,7 +97,7 @@ export function ChatView({ campaign, state, onChoiceSelect }: ChatViewProps) {
         }
 
         // Choice prompt
-        const prompt = item.data
+        const prompt = timelineItem.data
         const isActive = prompt.selectedChoiceId === null
         const hasOnlyActions = prompt.choices.every(
           (c) => c.type === ChoiceType.Action,

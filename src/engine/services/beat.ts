@@ -1,10 +1,10 @@
 import type { CharacterPresence } from './presence'
 import type { Choice } from './choice'
-import type { Message } from './message'
+import type { BeatItem } from './message'
 
 export type Beat = {
   id: string
-  messages: Message[]
+  items: BeatItem[]
   choices: Choice[]
   isEnding?: boolean
   presenceChanges?: Record<string, Partial<CharacterPresence>>

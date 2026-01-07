@@ -16,16 +16,6 @@ export function MessageBubble({
   showAvatar = true,
   isGroup = false,
 }: MessageBubbleProps) {
-  const isSystem = message.sender === 'system'
-
-  if (isSystem) {
-    return (
-      <Bubble.System className="animate-message-appear">
-        {message.content}
-      </Bubble.System>
-    )
-  }
-
   const variant = isPlayer ? 'player' : 'npc'
 
   return (
@@ -47,11 +37,7 @@ export function MessageBubble({
           <Bubble.Sender>{character.name}</Bubble.Sender>
         )}
 
-        {message.type === 'image' ? (
-          <Bubble.Image src={message.content} />
-        ) : (
-          <Bubble.Message>{message.content}</Bubble.Message>
-        )}
+        <Bubble.Message>{message.content}</Bubble.Message>
 
         <Bubble.Status status={message.status} />
       </Bubble.Content>
