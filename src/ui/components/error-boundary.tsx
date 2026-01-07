@@ -1,6 +1,5 @@
 import { Component, type ReactNode } from 'react'
 import { clearAllData } from '../../engine'
-import { Button } from '../primitives'
 
 type ErrorBoundaryProps = {
   children: ReactNode
@@ -29,42 +28,88 @@ export class ErrorBoundary extends Component<
     window.location.reload()
   }
 
-  handleReload = () => {
-    window.location.reload()
-  }
-
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-          <div className="mb-6">
-            <div className="text-6xl mb-4">💀</div>
-            <h1 className="text-xl font-semibold text-foreground mb-2">
-              Something went wrong
-            </h1>
-            <p className="text-sm text-muted-foreground max-w-sm">
-              The game encountered an unexpected error. This might be due to
-              corrupted save data.
-            </p>
-          </div>
+        <div
+          style={{
+            minHeight: '100dvh',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '24px',
+            backgroundColor: '#09090b',
+            color: '#fafafa',
+            fontFamily: 'system-ui, sans-serif',
+          }}
+        >
+          <div style={{ fontSize: '64px', marginBottom: '16px' }}>💀</div>
+
+          <h1
+            style={{
+              fontSize: '20px',
+              fontWeight: 600,
+              marginBottom: '8px',
+            }}
+          >
+            Something went wrong
+          </h1>
+
+          <p
+            style={{
+              fontSize: '14px',
+              color: '#a1a1aa',
+              maxWidth: '300px',
+              textAlign: 'center',
+              marginBottom: '24px',
+            }}
+          >
+            This might be due to corrupted save data from a previous version.
+          </p>
 
           {this.state.error && (
-            <pre className="text-xs text-destructive bg-destructive/10 p-3 rounded-lg mb-6 max-w-full overflow-auto">
+            <pre
+              style={{
+                fontSize: '12px',
+                color: '#f87171',
+                backgroundColor: 'rgba(248, 113, 113, 0.1)',
+                padding: '12px 16px',
+                borderRadius: '8px',
+                marginBottom: '24px',
+                maxWidth: '100%',
+                overflow: 'auto',
+              }}
+            >
               {this.state.error.message}
             </pre>
           )}
 
-          <div className="flex flex-col gap-3 w-full max-w-xs">
-            <Button onClick={this.handleReload} variant="secondary">
-              Try Again
-            </Button>
-            <Button onClick={this.handleClearCache} variant="ghost">
-              Clear Cache & Reload
-            </Button>
-          </div>
+          <button
+            type="button"
+            onClick={this.handleClearCache}
+            style={{
+              padding: '12px 24px',
+              fontSize: '15px',
+              fontWeight: 500,
+              backgroundColor: '#3b82f6',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '12px',
+              cursor: 'pointer',
+            }}
+          >
+            Clear Cache & Reload
+          </button>
 
-          <p className="text-xs text-muted-foreground mt-6">
-            Clearing cache will reset all your game progress.
+          <p
+            style={{
+              fontSize: '12px',
+              color: '#71717a',
+              marginTop: '16px',
+            }}
+          >
+            This will reset all game progress.
           </p>
         </div>
       )
