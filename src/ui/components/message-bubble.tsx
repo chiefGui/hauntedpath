@@ -1,4 +1,5 @@
 import type { DisplayedMessage, Character } from '../../engine'
+import { Avatar } from '../primitives'
 
 export type MessageBubbleProps = {
   message: DisplayedMessage
@@ -32,15 +33,12 @@ export function MessageBubble({
       className={`flex items-end gap-2 ${isPlayer ? 'flex-row-reverse' : 'flex-row'}`}
     >
       {!isPlayer && showAvatar && (
-        <div className="w-7 h-7 shrink-0">
-          {character && (
-            <img
-              src={character.avatar}
-              alt={character.name}
-              className="w-7 h-7 rounded-full object-cover"
-            />
-          )}
-        </div>
+        <Avatar
+          src={character?.avatar}
+          alt={character?.name}
+          fallback={character?.name}
+          size="sm"
+        />
       )}
       {!isPlayer && !showAvatar && <div className="w-7 shrink-0" />}
 

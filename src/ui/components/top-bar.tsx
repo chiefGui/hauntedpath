@@ -1,5 +1,5 @@
 import type { Character } from '../../engine'
-import { Button } from '../primitives'
+import { Avatar, Button } from '../primitives'
 
 export type TopBarProps = {
   characters: Character[]
@@ -18,16 +18,9 @@ export function TopBar({
     ? groupName ?? characters.map((c) => c.name).join(', ')
     : characters[0]?.name ?? 'Unknown'
 
-  const displayAvatar = isGroup ? null : characters[0]?.avatar
-
   return (
     <div className="flex items-center gap-3 px-4 py-3 bg-[--color-surface-elevated] border-b border-[--color-surface-tertiary]">
-      <Button
-        onClick={onBack}
-        variant="ghost"
-        size="sm"
-        className="p-1"
-      >
+      <Button onClick={onBack} variant="ghost" size="icon">
         <svg
           width="12"
           height="20"
@@ -49,23 +42,23 @@ export function TopBar({
         {isGroup ? (
           <div className="flex -space-x-2">
             {characters.slice(0, 3).map((char, i) => (
-              <img
+              <Avatar
                 key={char.id}
                 src={char.avatar}
                 alt={char.name}
-                className="w-9 h-9 rounded-full border-2 border-[--color-surface-elevated] object-cover"
+                size="md"
+                className="border-2 border-[--color-surface-elevated]"
                 style={{ zIndex: 3 - i }}
               />
             ))}
           </div>
         ) : (
-          displayAvatar && (
-            <img
-              src={displayAvatar}
-              alt={displayName}
-              className="w-9 h-9 rounded-full object-cover"
-            />
-          )
+          <Avatar
+            src={characters[0]?.avatar}
+            alt={displayName}
+            fallback={displayName}
+            size="md"
+          />
         )}
       </div>
 

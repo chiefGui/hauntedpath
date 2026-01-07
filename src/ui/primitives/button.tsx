@@ -20,6 +20,7 @@ const buttonVariants = tv({
       sm: 'px-3 py-1.5 text-sm',
       md: 'px-4 py-2.5 text-[15px]',
       lg: 'px-5 py-3 text-base',
+      icon: 'p-2',
     },
   },
   defaultVariants: {

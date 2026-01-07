@@ -1,5 +1,5 @@
 import type { Campaign, SavedGame } from '../../engine'
-import { Button } from '../primitives'
+import { Badge, Button } from '../primitives'
 
 export type CampaignCardProps = {
   campaign: Campaign
@@ -28,9 +28,7 @@ export function CampaignCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
 
         {hasProgress && (
-          <div className="absolute top-3 right-3 px-2 py-1 text-xs font-medium bg-[--color-accent] text-white rounded-full">
-            In Progress
-          </div>
+          <Badge className="absolute top-3 right-3">In Progress</Badge>
         )}
 
         <div className="absolute bottom-0 left-0 right-0 p-4">

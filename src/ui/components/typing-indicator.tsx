@@ -1,4 +1,5 @@
 import type { Character } from '../../engine'
+import { Avatar } from '../primitives'
 
 export type TypingIndicatorProps = {
   character: Character | null
@@ -12,15 +13,12 @@ export function TypingIndicator({
   return (
     <div className="flex items-end gap-2">
       {showAvatar && (
-        <div className="w-7 h-7 shrink-0">
-          {character && (
-            <img
-              src={character.avatar}
-              alt={character.name}
-              className="w-7 h-7 rounded-full object-cover"
-            />
-          )}
-        </div>
+        <Avatar
+          src={character?.avatar}
+          alt={character?.name}
+          fallback={character?.name}
+          size="sm"
+        />
       )}
       {!showAvatar && <div className="w-7 shrink-0" />}
 
