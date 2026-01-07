@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import type { Campaign, GameState } from '../../engine'
 import { getCharacter } from '../../engine'
 import { MessageBubble } from './message-bubble'

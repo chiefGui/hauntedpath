@@ -26,17 +26,20 @@ export type AvatarProps = {
   style?: CSSProperties
 } & VariantProps<typeof avatarVariants>
 
-export function Avatar({ src, alt, fallback, size, className, style }: AvatarProps) {
+export function Avatar({
+  src,
+  alt,
+  fallback,
+  size,
+  className,
+  style,
+}: AvatarProps) {
   const initials = fallback ?? alt?.charAt(0).toUpperCase() ?? '?'
 
   return (
     <div className={cn(avatarVariants({ size }), className)} style={style}>
       {src ? (
-        <img
-          src={src}
-          alt={alt ?? ''}
-          className="w-full h-full object-cover"
-        />
+        <img src={src} alt={alt ?? ''} className="w-full h-full object-cover" />
       ) : (
         <div className="w-full h-full flex items-center justify-center bg-[--color-surface-tertiary] text-[--color-text-secondary] font-medium">
           {initials}

@@ -1,16 +1,16 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
-import type { Campaign, GameState, Choice } from '../story-engine'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { deleteGame, loadGame, saveGame } from '../persistence'
+import type { Campaign, Choice, GameState } from '../story-engine'
 import {
-  createInitialState,
-  getCurrentBeat,
-  getAvailableChoices,
-  selectChoice,
   addDisplayedMessage,
-  setTyping,
+  createInitialState,
+  getAvailableChoices,
+  getCurrentBeat,
   getPendingMessages,
   isEnding,
+  selectChoice,
+  setTyping,
 } from '../story-engine'
-import { saveGame, loadGame, deleteGame } from '../persistence'
 
 const DEFAULT_TYPING_DELAY = 1500
 const DEFAULT_MESSAGE_DELAY = 800
@@ -91,7 +91,7 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
       setState(selectChoice(campaign, state, choice))
       processingRef.current = false
     },
-    [campaign, state]
+    [campaign, state],
   )
 
   const restart = useCallback(async () => {

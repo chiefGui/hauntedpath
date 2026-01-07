@@ -1,17 +1,17 @@
 import {
-  type ComponentPropsWithoutRef,
-  type ReactNode,
-  createContext,
-  useContext,
-} from 'react'
-import {
   Dialog as AriaDialog,
+  DialogDescription as AriaDialogDescription,
   DialogDismiss as AriaDialogDismiss,
   DialogHeading as AriaDialogHeading,
-  DialogDescription as AriaDialogDescription,
-  useDialogStore,
   type DialogStore,
+  useDialogStore,
 } from '@ariakit/react'
+import {
+  type ComponentPropsWithoutRef,
+  createContext,
+  type ReactNode,
+  useContext,
+} from 'react'
 import { cn } from '../lib'
 
 const DialogContext = createContext<DialogStore | null>(null)
@@ -77,7 +77,7 @@ function DialogContent({ children, className, ...props }: DialogContentProps) {
         'bg-[--color-surface-elevated] rounded-2xl p-6',
         'shadow-xl',
         'animate-in fade-in zoom-in-95 duration-200',
-        className
+        className,
       )}
       {...props}
     >
@@ -92,7 +92,9 @@ function DialogHeader({ className, ...props }: DialogHeaderProps) {
   return <div className={cn('mb-4', className)} {...props} />
 }
 
-export type DialogTitleProps = ComponentPropsWithoutRef<typeof AriaDialogHeading>
+export type DialogTitleProps = ComponentPropsWithoutRef<
+  typeof AriaDialogHeading
+>
 
 function DialogTitle({ className, ...props }: DialogTitleProps) {
   const store = useDialogContext()
@@ -100,7 +102,10 @@ function DialogTitle({ className, ...props }: DialogTitleProps) {
   return (
     <AriaDialogHeading
       store={store}
-      className={cn('text-lg font-semibold text-[--color-text-primary]', className)}
+      className={cn(
+        'text-lg font-semibold text-[--color-text-primary]',
+        className,
+      )}
       {...props}
     />
   )
@@ -125,10 +130,14 @@ function DialogDescription({ className, ...props }: DialogDescriptionProps) {
 export type DialogFooterProps = ComponentPropsWithoutRef<'div'>
 
 function DialogFooter({ className, ...props }: DialogFooterProps) {
-  return <div className={cn('mt-6 flex gap-3 justify-end', className)} {...props} />
+  return (
+    <div className={cn('mt-6 flex gap-3 justify-end', className)} {...props} />
+  )
 }
 
-export type DialogCloseProps = ComponentPropsWithoutRef<typeof AriaDialogDismiss>
+export type DialogCloseProps = ComponentPropsWithoutRef<
+  typeof AriaDialogDismiss
+>
 
 function DialogClose({ children, className, ...props }: DialogCloseProps) {
   const store = useDialogContext()

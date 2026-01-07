@@ -1,5 +1,5 @@
-import { forwardRef, type ComponentPropsWithoutRef } from 'react'
 import { Button as AriaButton } from '@ariakit/react'
+import { type ComponentPropsWithoutRef, forwardRef } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '../lib'
 
@@ -41,7 +41,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       />
     )
-  }
+  },
 )
 
 export { buttonVariants }

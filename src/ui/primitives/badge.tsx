@@ -9,7 +9,8 @@ const badgeVariants = tv({
       secondary: 'bg-[--color-surface-secondary] text-[--color-text-primary]',
       success: 'bg-[--color-success] text-white',
       destructive: 'bg-[--color-destructive] text-white',
-      outline: 'border border-[--color-surface-tertiary] text-[--color-text-secondary]',
+      outline:
+        'border border-[--color-surface-tertiary] text-[--color-text-secondary]',
     },
     size: {
       sm: 'px-1.5 py-0.5 text-[10px] rounded',
