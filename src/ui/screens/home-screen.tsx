@@ -65,7 +65,7 @@ export function HomeScreen({ campaigns, onSelectCampaign }: HomeScreenProps) {
             {/* Badge */}
             {getSavedGame(featuredCampaign.id) && (
               <Badge className="mb-3 bg-white/10 backdrop-blur-md text-white border-0">
-                Continue Watching
+                In Progress
               </Badge>
             )}
 
