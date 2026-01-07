@@ -1,4 +1,4 @@
-import { ChoiceType, type Campaign } from '../../../engine'
+import { ChoiceType, ContactStatus, type Campaign } from '../../../engine'
 
 // Simple avatar placeholder - a dark silhouette
 const unknownAvatar = `data:image/svg+xml,${encodeURIComponent(`
@@ -54,6 +54,9 @@ export const unknownNumberCampaign: Campaign = {
   beats: {
     start: {
       id: 'start',
+      presenceChanges: {
+        unknown: { status: ContactStatus.Online },
+      },
       messages: [
         {
           id: 'msg-1',
@@ -240,6 +243,9 @@ export const unknownNumberCampaign: Campaign = {
     },
     'call-police': {
       id: 'call-police',
+      presenceChanges: {
+        unknown: { status: ContactStatus.Offline },
+      },
       messages: [
         {
           id: 'msg-14',
@@ -329,6 +335,9 @@ export const unknownNumberCampaign: Campaign = {
     },
     'block-number': {
       id: 'block-number',
+      presenceChanges: {
+        unknown: { status: ContactStatus.Online },
+      },
       messages: [
         {
           id: 'msg-23',
@@ -378,6 +387,9 @@ export const unknownNumberCampaign: Campaign = {
     },
     'check-doors': {
       id: 'check-doors',
+      presenceChanges: {
+        unknown: { status: ContactStatus.Offline },
+      },
       messages: [
         {
           id: 'msg-29',
