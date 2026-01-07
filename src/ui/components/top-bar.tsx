@@ -9,6 +9,7 @@ export type TopBarProps = {
   isTyping?: boolean
   presence?: CharacterPresence | null
   onBack: () => void
+  onMenuOpen?: () => void
 }
 
 export function TopBar({
@@ -18,6 +19,7 @@ export function TopBar({
   isTyping = false,
   presence,
   onBack,
+  onMenuOpen,
 }: TopBarProps) {
   const primaryCharacter = characters[0]
   const displayName = isGroup
@@ -109,6 +111,28 @@ export function TopBar({
           </p>
         )}
       </div>
+
+      {/* Menu button */}
+      {onMenuOpen && (
+        <Button
+          onClick={onMenuOpen}
+          variant="ghost"
+          size="icon"
+          className="shrink-0 -mr-1"
+        >
+          <svg
+            width="4"
+            height="16"
+            viewBox="0 0 4 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="2" cy="2" r="1.5" fill="currentColor" />
+            <circle cx="2" cy="8" r="1.5" fill="currentColor" />
+            <circle cx="2" cy="14" r="1.5" fill="currentColor" />
+          </svg>
+        </Button>
+      )}
     </div>
   )
 }
