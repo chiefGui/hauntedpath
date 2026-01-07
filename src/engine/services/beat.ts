@@ -4,6 +4,7 @@ import type { BeatItem } from './message'
 
 export type Beat = {
   id: string
+  at?: string // e.g., "2:47 AM", "Tuesday, 3:15 AM", "+30m"
   items: BeatItem[]
   choices: Choice[]
   isEnding?: boolean
