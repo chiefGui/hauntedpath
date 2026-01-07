@@ -1,6 +1,6 @@
 import type { Campaign } from '../../engine'
 import { useGame } from '../../engine'
-import { ChatView, ChoicePicker, TopBar } from '../components'
+import { ChatView, TopBar } from '../components'
 import { Button } from '../primitives'
 
 export type GameScreenProps = {
@@ -9,7 +9,7 @@ export type GameScreenProps = {
 }
 
 export function GameScreen({ campaign, onBack }: GameScreenProps) {
-  const { state, isLoading, choices, isEnding, handleChoice, restart } =
+  const { state, isLoading, isEnding, handleChoice, restart } =
     useGame(campaign)
 
   if (isLoading || !state) {
@@ -29,9 +29,13 @@ export function GameScreen({ campaign, onBack }: GameScreenProps) {
         onBack={onBack}
       />
 
-      <ChatView campaign={campaign} state={state} />
+      <ChatView
+        campaign={campaign}
+        state={state}
+        onChoiceSelect={handleChoice}
+      />
 
-      {isEnding ? (
+      {isEnding && (
         <div className="flex flex-col gap-3 p-4 bg-card border-t border-border">
           <p className="text-center text-sm text-muted-foreground">
             End of story
@@ -45,8 +49,6 @@ export function GameScreen({ campaign, onBack }: GameScreenProps) {
             </Button>
           </div>
         </div>
-      ) : (
-        <ChoicePicker choices={choices} onSelect={handleChoice} />
       )}
     </div>
   )

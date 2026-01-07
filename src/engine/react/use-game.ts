@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { deleteGame, loadGame, saveGame } from '../persistence'
 import type { Campaign, Choice, GameState } from '../story-engine'
 import {
+  addChoicePrompt,
   addDisplayedMessage,
   createInitialState,
   getAvailableChoices,
@@ -117,6 +118,21 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
   const choices = state ? getAvailableChoices(campaign, state) : []
   const currentBeat = state ? getCurrentBeat(campaign, state) : null
   const ending = state ? isEnding(campaign, state) : false
+
+  // Create choice prompt when choices become available
+  useEffect(() => {
+    if (!state || choices.length === 0) return
+
+    // Check if we already have a prompt for this beat
+    const existingPrompt = state.choicePrompts.some(
+      (p) => p.beatId === state.currentBeatId,
+    )
+    if (existingPrompt) return
+
+    setState((s) =>
+      s ? addChoicePrompt(s, state.currentBeatId, choices) : s,
+    )
+  }, [state, choices])
 
   return {
     state,

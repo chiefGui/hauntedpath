@@ -74,10 +74,19 @@ export type DisplayedMessage = {
   status: MessageStatus
 }
 
+export type ChoicePrompt = {
+  id: string
+  beatId: string
+  choices: Choice[]
+  selectedChoiceId: string | null
+  timestamp: number
+}
+
 export type GameState = {
   campaignId: string
   currentBeatId: string
   displayedMessages: DisplayedMessage[]
+  choicePrompts: ChoicePrompt[]
   isTyping: boolean
   visitedBeatIds: string[]
   startedAt: number
@@ -90,6 +99,7 @@ export function createInitialState(campaign: Campaign): GameState {
     campaignId: campaign.id,
     currentBeatId: campaign.startBeatId,
     displayedMessages: [],
+    choicePrompts: [],
     isTyping: false,
     visitedBeatIds: [campaign.startBeatId],
     startedAt: now,
@@ -128,23 +138,63 @@ export function selectChoice(
   choice: Choice,
 ): GameState {
   const isAction = choice.type === ChoiceType.Action
+  const now = Date.now()
 
-  const playerMessage: DisplayedMessage = {
-    id: crypto.randomUUID(),
-    messageId: `player-${choice.id}`,
-    sender: isAction ? 'system' : 'player',
-    type: isAction ? MessageType.System : MessageType.Text,
-    content: choice.text,
-    timestamp: Date.now(),
-    status: 'sent',
-  }
+  // Mark the current choice prompt as selected
+  const updatedPrompts = state.choicePrompts.map((prompt) =>
+    prompt.beatId === state.currentBeatId && prompt.selectedChoiceId === null
+      ? { ...prompt, selectedChoiceId: choice.id }
+      : prompt,
+  )
+
+  // For text choices, add a player message
+  // For action choices, the selection is shown inline (no message added)
+  const newMessages = isAction
+    ? state.displayedMessages
+    : [
+        ...state.displayedMessages,
+        {
+          id: crypto.randomUUID(),
+          messageId: `player-${choice.id}`,
+          sender: 'player',
+          type: MessageType.Text,
+          content: choice.text,
+          timestamp: now,
+          status: 'sent' as const,
+        },
+      ]
 
   return {
     ...state,
     currentBeatId: choice.nextBeatId,
-    displayedMessages: [...state.displayedMessages, playerMessage],
+    displayedMessages: newMessages,
+    choicePrompts: updatedPrompts,
     visitedBeatIds: [...state.visitedBeatIds, choice.nextBeatId],
-    lastPlayedAt: Date.now(),
+    lastPlayedAt: now,
+  }
+}
+
+export function addChoicePrompt(
+  state: GameState,
+  beatId: string,
+  choices: Choice[],
+): GameState {
+  // Don't add if prompt already exists for this beat
+  if (state.choicePrompts.some((p) => p.beatId === beatId)) {
+    return state
+  }
+
+  const prompt: ChoicePrompt = {
+    id: crypto.randomUUID(),
+    beatId,
+    choices,
+    selectedChoiceId: null,
+    timestamp: Date.now(),
+  }
+
+  return {
+    ...state,
+    choicePrompts: [...state.choicePrompts, prompt],
   }
 }
 
