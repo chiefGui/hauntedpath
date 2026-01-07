@@ -1,0 +1,77 @@
+import { openDB, type IDBPDatabase } from 'idb'
+import type { SavedGame, GameState } from './types'
+
+const DB_NAME = 'hauntedpath'
+const DB_VERSION = 1
+const STORE_NAME = 'saved-games'
+
+type HauntedPathDB = IDBPDatabase<{
+  'saved-games': {
+    key: string
+    value: SavedGame
+    indexes: { 'by-campaign': string }
+  }
+}>
+
+let dbPromise: Promise<HauntedPathDB> | null = null
+
+function getDB(): Promise<HauntedPathDB> {
+  if (!dbPromise) {
+    dbPromise = openDB<{
+      'saved-games': {
+        key: string
+        value: SavedGame
+        indexes: { 'by-campaign': string }
+      }
+    }>(DB_NAME, DB_VERSION, {
+      upgrade(db) {
+        const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' })
+        store.createIndex('by-campaign', 'campaignId')
+      },
+    })
+  }
+  return dbPromise
+}
+
+export async function saveGame(
+  campaignId: string,
+  state: GameState
+): Promise<SavedGame> {
+  const db = await getDB()
+  const now = Date.now()
+
+  // Check if save exists for this campaign
+  const existing = await db.getFromIndex(STORE_NAME, 'by-campaign', campaignId)
+
+  const savedGame: SavedGame = existing
+    ? { ...existing, state, updatedAt: now }
+    : {
+        id: crypto.randomUUID(),
+        campaignId,
+        state,
+        createdAt: now,
+        updatedAt: now,
+      }
+
+  await db.put(STORE_NAME, savedGame)
+  return savedGame
+}
+
+export async function loadGame(campaignId: string): Promise<SavedGame | null> {
+  const db = await getDB()
+  const savedGame = await db.getFromIndex(STORE_NAME, 'by-campaign', campaignId)
+  return savedGame ?? null
+}
+
+export async function deleteGame(campaignId: string): Promise<void> {
+  const db = await getDB()
+  const savedGame = await db.getFromIndex(STORE_NAME, 'by-campaign', campaignId)
+  if (savedGame) {
+    await db.delete(STORE_NAME, savedGame.id)
+  }
+}
+
+export async function getAllSavedGames(): Promise<SavedGame[]> {
+  const db = await getDB()
+  return db.getAll(STORE_NAME)
+}
