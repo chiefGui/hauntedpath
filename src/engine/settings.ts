@@ -1,4 +1,4 @@
-import { type IDBPDatabase, openDB } from 'idb'
+import { getDB } from './database'
 
 export type AccentColor =
   | 'violet'
@@ -82,56 +82,16 @@ export type AppSettings = {
   accentColor: AccentColor
 }
 
-const DB_NAME = 'hauntedpath'
-const DB_VERSION = 2
 const SETTINGS_STORE = 'settings'
 
-type SettingsDB = IDBPDatabase<{
-  settings: {
-    key: string
-    value: AppSettings
-  }
-  'saved-games': {
-    key: string
-    value: unknown
-    indexes: { 'by-campaign': string }
-  }
-}>
-
-let dbPromise: Promise<SettingsDB> | null = null
-
-function getDB(): Promise<SettingsDB> {
-  if (!dbPromise) {
-    dbPromise = openDB<{
-      settings: {
-        key: string
-        value: AppSettings
-      }
-      'saved-games': {
-        key: string
-        value: unknown
-        indexes: { 'by-campaign': string }
-      }
-    }>(DB_NAME, DB_VERSION, {
-      upgrade(db, oldVersion) {
-        // Migrate from v1 to v2
-        if (oldVersion < 1) {
-          const store = db.createObjectStore('saved-games', { keyPath: 'id' })
-          store.createIndex('by-campaign', 'campaignId')
-        }
-        if (oldVersion < 2) {
-          db.createObjectStore(SETTINGS_STORE, { keyPath: 'id' })
-        }
-      },
-    })
-  }
-  return dbPromise
-}
-
 export async function getSettings(): Promise<AppSettings> {
-  const db = await getDB()
-  const settings = await db.get(SETTINGS_STORE, 'app-settings')
-  return settings ?? { id: 'app-settings', accentColor: defaultAccentColor }
+  try {
+    const db = await getDB()
+    const settings = await db.get(SETTINGS_STORE, 'app-settings')
+    return (settings as AppSettings) ?? { id: 'app-settings', accentColor: defaultAccentColor }
+  } catch {
+    return { id: 'app-settings', accentColor: defaultAccentColor }
+  }
 }
 
 export async function saveSettings(settings: Partial<AppSettings>): Promise<AppSettings> {
