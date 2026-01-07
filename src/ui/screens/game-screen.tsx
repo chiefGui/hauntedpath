@@ -9,7 +9,7 @@ export type GameScreenProps = {
 }
 
 export function GameScreen({ campaign, onBack }: GameScreenProps) {
-  const { state, isLoading, isEnding, handleChoice, restart } =
+  const { state, isLoading, isEnding, handleChoice, restart, getPresence } =
     useGame(campaign)
 
   if (isLoading || !state) {
@@ -20,12 +20,16 @@ export function GameScreen({ campaign, onBack }: GameScreenProps) {
     )
   }
 
+  const primaryCharacter = campaign.characters[0]
+  const presence = primaryCharacter ? getPresence(primaryCharacter.id) : null
+
   return (
     <div className="flex flex-col h-full">
       <TopBar
         characters={campaign.characters}
         isGroup={campaign.isGroup}
         isTyping={state.isTyping}
+        presence={presence}
         onBack={onBack}
       />
 

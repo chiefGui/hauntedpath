@@ -4,8 +4,10 @@ import type { Campaign, Choice, GameState } from '../story-engine'
 import {
   addChoicePrompt,
   addDisplayedMessage,
+  applyPresenceChanges,
   createInitialState,
   getAvailableChoices,
+  getCharacterPresence,
   getCurrentBeat,
   getPendingMessages,
   isEnding,
@@ -34,7 +36,13 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
       if (saved) {
         setState(saved.state)
       } else {
-        setState(createInitialState(campaign))
+        // Create initial state and apply presence changes from starting beat
+        let initialState = createInitialState(campaign)
+        const startBeat = campaign.beats[campaign.startBeatId]
+        if (startBeat?.presenceChanges) {
+          initialState = applyPresenceChanges(initialState, startBeat.presenceChanges)
+        }
+        setState(initialState)
       }
       setIsLoading(false)
     }
@@ -100,8 +108,17 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
       // Clear any pending timeouts
       timeoutsRef.current.forEach((t) => clearTimeout(t))
       timeoutsRef.current = []
+
       // Update state with player's choice
-      setState(selectChoice(campaign, state, choice))
+      let newState = selectChoice(campaign, state, choice)
+
+      // Apply presence changes from the new beat (if any)
+      const newBeat = getCurrentBeat(campaign, newState)
+      if (newBeat?.presenceChanges) {
+        newState = applyPresenceChanges(newState, newBeat.presenceChanges)
+      }
+
+      setState(newState)
       setIsProcessing(false)
     },
     [campaign, state],
@@ -134,6 +151,14 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
     )
   }, [state, choices])
 
+  const getPresence = useCallback(
+    (characterId: string) => {
+      if (!state) return null
+      return getCharacterPresence(state, characterId)
+    },
+    [state],
+  )
+
   return {
     state,
     isLoading,
@@ -143,5 +168,6 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
     isEnding: ending,
     handleChoice,
     restart,
+    getPresence,
   }
 }
