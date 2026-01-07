@@ -8,7 +8,11 @@ import { MessageService } from './message'
 import type { CharacterPresence } from './presence'
 import { ContactStatus, PresenceService } from './presence'
 
+// Bump this when GameState shape changes - old saves will be deleted
+export const SAVE_VERSION = 1
+
 export type GameState = {
+  version: number
   campaignId: string
   currentBeatId: string
   displayedMessages: DisplayedMessage[]
@@ -32,6 +36,7 @@ export class GameStateService {
     }
 
     return {
+      version: SAVE_VERSION,
       campaignId: campaign.id,
       currentBeatId: campaign.startBeatId,
       displayedMessages: [],
