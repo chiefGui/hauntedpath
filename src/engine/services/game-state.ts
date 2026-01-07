@@ -3,19 +3,19 @@ import { BeatService } from './beat'
 import type { Campaign } from './campaign'
 import type { Choice, ChoicePrompt } from './choice'
 import { ChoiceService } from './choice'
-import type { DisplayedMessage, Message } from './message'
+import type { BeatItem, DisplayedItem } from './message'
 import { MessageService } from './message'
 import type { CharacterPresence } from './presence'
 import { ContactStatus, PresenceService } from './presence'
 
 // Bump this when GameState shape changes - old saves will be deleted
-export const SAVE_VERSION = 1
+export const SAVE_VERSION = 2
 
 export type GameState = {
   version: number
   campaignId: string
   currentBeatId: string
-  displayedMessages: DisplayedMessage[]
+  displayedItems: DisplayedItem[]
   choicePrompts: ChoicePrompt[]
   isTyping: boolean
   visitedBeatIds: string[]
@@ -39,7 +39,7 @@ export class GameStateService {
       version: SAVE_VERSION,
       campaignId: campaign.id,
       currentBeatId: campaign.startBeatId,
-      displayedMessages: [],
+      displayedItems: [],
       choicePrompts: [],
       isTyping: false,
       visitedBeatIds: [campaign.startBeatId],
@@ -57,22 +57,22 @@ export class GameStateService {
     const beat = this.getCurrentBeat(campaign, state)
     if (!beat) return []
 
-    const displayedCount = state.displayedMessages.filter((dm) =>
-      beat.messages.some((m) => m.id === dm.messageId),
+    const displayedCount = state.displayedItems.filter((di) =>
+      beat.items.some((item) => item.id === di.itemId),
     ).length
 
-    if (displayedCount < beat.messages.length) return []
+    if (displayedCount < beat.items.length) return []
     if (state.isTyping) return []
 
     return beat.choices
   }
 
-  static getPendingMessages(campaign: Campaign, state: GameState): Message[] {
+  static getPendingItems(campaign: Campaign, state: GameState): BeatItem[] {
     const beat = this.getCurrentBeat(campaign, state)
     if (!beat) return []
 
-    const displayedIds = new Set(state.displayedMessages.map((dm) => dm.messageId))
-    return beat.messages.filter((m) => !displayedIds.has(m.id))
+    const displayedIds = new Set(state.displayedItems.map((di) => di.itemId))
+    return beat.items.filter((item) => !displayedIds.has(item.id))
   }
 
   static isEnding(campaign: Campaign, state: GameState): boolean {
@@ -84,12 +84,12 @@ export class GameStateService {
     return { ...state, isTyping }
   }
 
-  static addMessage(state: GameState, message: Message): GameState {
+  static addItem(state: GameState, item: BeatItem): GameState {
     return {
       ...state,
-      displayedMessages: [
-        ...state.displayedMessages,
-        MessageService.createDisplayed(message),
+      displayedItems: [
+        ...state.displayedItems,
+        MessageService.createDisplayed(item),
       ],
       lastPlayedAt: Date.now(),
     }
@@ -123,17 +123,17 @@ export class GameStateService {
         : prompt,
     )
 
-    const newMessages = isAction
-      ? state.displayedMessages
+    const newItems = isAction
+      ? state.displayedItems
       : [
-          ...state.displayedMessages,
+          ...state.displayedItems,
           MessageService.createPlayerMessage(choice.text, choice.id),
         ]
 
     return {
       ...state,
       currentBeatId: choice.nextBeatId,
-      displayedMessages: newMessages,
+      displayedItems: newItems,
       choicePrompts: updatedPrompts,
       visitedBeatIds: [...state.visitedBeatIds, choice.nextBeatId],
       lastPlayedAt: now,

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { deleteGame, loadGame, saveGame } from '../persistence'
 import type { Campaign, Choice, GameState } from '../services'
-import { GameStateService, SAVE_VERSION } from '../services'
+import { GameStateService, isMessage, SAVE_VERSION } from '../services'
 
 const DEFAULT_TYPING_DELAY = 800
 const DEFAULT_MESSAGE_DELAY = 400
@@ -53,25 +53,26 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
     saveGame(campaign.id, state)
   }, [campaign.id, state, autoSave, isLoading])
 
-  // Process pending messages one at a time
+  // Process pending items one at a time
   useEffect(() => {
     if (!state || isProcessing) return
 
-    const pending = GameStateService.getPendingMessages(campaign, state)
+    const pending = GameStateService.getPendingItems(campaign, state)
     if (pending.length === 0) return
 
     setIsProcessing(true)
-    const nextMessage = pending[0]
+    const nextItem = pending[0]
 
-    if (nextMessage.sender !== 'system') {
+    // Messages from characters show typing indicator
+    if (isMessage(nextItem)) {
       setState((s) => (s ? GameStateService.setTyping(s, true) : s))
 
-      const typingDelay = nextMessage.delay ?? DEFAULT_TYPING_DELAY
+      const typingDelay = nextItem.delay ?? DEFAULT_TYPING_DELAY
       const typingTimeout = window.setTimeout(() => {
         setState((s) => {
           if (!s) return s
-          const withMessage = GameStateService.addMessage(s, nextMessage)
-          return GameStateService.setTyping(withMessage, false)
+          const withItem = GameStateService.addItem(s, nextItem)
+          return GameStateService.setTyping(withItem, false)
         })
 
         const nextTimeout = window.setTimeout(() => {
@@ -81,10 +82,11 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
       }, typingDelay)
       timeoutsRef.current.push(typingTimeout)
     } else {
-      setState((s) => (s ? GameStateService.addMessage(s, nextMessage) : s))
+      // Events appear immediately (no typing indicator)
+      setState((s) => (s ? GameStateService.addItem(s, nextItem) : s))
       const nextTimeout = window.setTimeout(() => {
         setIsProcessing(false)
-      }, nextMessage.delay ?? 300)
+      }, nextItem.delay ?? 300)
       timeoutsRef.current.push(nextTimeout)
     }
   }, [campaign, state, isProcessing])
