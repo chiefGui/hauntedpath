@@ -3,23 +3,53 @@
 @theme {
   --font-sans: 'SF Pro Text', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 
-  --color-surface: #000000;
-  --color-surface-elevated: #1c1c1e;
-  --color-surface-secondary: #2c2c2e;
-  --color-surface-tertiary: #3a3a3c;
+  /* shadcn-style semantic colors in oklch */
+  --color-background: oklch(0% 0 0);
+  --color-foreground: oklch(100% 0 0);
 
-  --color-text-primary: #ffffff;
-  --color-text-secondary: #8e8e93;
-  --color-text-tertiary: #636366;
+  --color-card: oklch(17% 0.005 285);
+  --color-card-foreground: oklch(100% 0 0);
 
-  --color-bubble-player: #0b84fe;
-  --color-bubble-npc: #2c2c2e;
+  --color-popover: oklch(17% 0.005 285);
+  --color-popover-foreground: oklch(100% 0 0);
 
-  --color-accent: #0b84fe;
-  --color-accent-hover: #0a7ae6;
+  --color-primary: oklch(62% 0.22 250);
+  --color-primary-foreground: oklch(100% 0 0);
 
-  --color-destructive: #ff3b30;
-  --color-success: #30d158;
+  --color-secondary: oklch(24% 0.005 285);
+  --color-secondary-foreground: oklch(100% 0 0);
+
+  --color-muted: oklch(30% 0.005 285);
+  --color-muted-foreground: oklch(63% 0.01 285);
+
+  --color-accent: oklch(24% 0.005 285);
+  --color-accent-foreground: oklch(100% 0 0);
+
+  --color-destructive: oklch(63% 0.26 25);
+  --color-destructive-foreground: oklch(100% 0 0);
+
+  --color-success: oklch(75% 0.22 145);
+  --color-success-foreground: oklch(100% 0 0);
+
+  --color-border: oklch(30% 0.005 285);
+  --color-input: oklch(30% 0.005 285);
+  --color-ring: oklch(62% 0.22 250);
+
+  /* iMessage specific */
+  --color-bubble-player: oklch(62% 0.22 250);
+  --color-bubble-npc: oklch(24% 0.005 285);
+
+  /* Legacy aliases */
+  --color-surface: var(--color-background);
+  --color-surface-elevated: var(--color-card);
+  --color-surface-secondary: var(--color-secondary);
+  --color-surface-tertiary: var(--color-muted);
+
+  --color-text-primary: var(--color-foreground);
+  --color-text-secondary: var(--color-muted-foreground);
+  --color-text-tertiary: oklch(46% 0.01 285);
+
+  --color-accent-hover: oklch(58% 0.20 250);
 }
 
 * {
@@ -34,9 +64,55 @@ html, body, #root {
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-surface);
-  color: var(--color-text-primary);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overscroll-behavior: none;
+}
+
+/* Message animations */
+@keyframes message-appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes message-appear-player {
+  from {
+    opacity: 0;
+    transform: translateY(8px) translateX(8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+}
+
+@keyframes typing-appear {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-message-appear {
+  animation: message-appear 0.2s ease-out forwards;
+}
+
+.animate-message-appear-player {
+  animation: message-appear-player 0.2s ease-out forwards;
+}
+
+.animate-typing-appear {
+  animation: typing-appear 0.15s ease-out forwards;
 }
