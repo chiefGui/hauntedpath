@@ -1,4 +1,4 @@
-import type { Campaign } from '../../../engine'
+import { ChoiceType, type Campaign } from '../../../engine'
 
 // Simple avatar placeholder - a dark silhouette
 const unknownAvatar = `data:image/svg+xml,${encodeURIComponent(`
@@ -156,11 +156,13 @@ export const unknownNumberCampaign: Campaign = {
           id: 'choice-3a',
           text: 'Look outside the window',
           nextBeatId: 'look-window',
+          type: ChoiceType.Action,
         },
         {
           id: 'choice-3b',
-          text: 'Block this number immediately',
+          text: 'Block this number',
           nextBeatId: 'block-number',
+          type: ChoiceType.Action,
         },
       ],
     },
@@ -192,8 +194,9 @@ export const unknownNumberCampaign: Campaign = {
       choices: [
         {
           id: 'choice-4a',
-          text: 'Check if the doors are locked',
+          text: 'Check the doors',
           nextBeatId: 'check-doors',
+          type: ChoiceType.Action,
         },
         {
           id: 'choice-4b',
@@ -225,11 +228,13 @@ export const unknownNumberCampaign: Campaign = {
           id: 'choice-5a',
           text: 'Open the closet',
           nextBeatId: 'ending-closet',
+          type: ChoiceType.Action,
         },
         {
           id: 'choice-5b',
           text: 'Run out of the room',
           nextBeatId: 'ending-run',
+          type: ChoiceType.Action,
         },
       ],
     },
@@ -312,11 +317,13 @@ export const unknownNumberCampaign: Campaign = {
           id: 'choice-6a',
           text: 'Turn around slowly',
           nextBeatId: 'ending-turn',
+          type: ChoiceType.Action,
         },
         {
           id: 'choice-6b',
           text: 'Sprint for the door',
           nextBeatId: 'ending-sprint',
+          type: ChoiceType.Action,
         },
       ],
     },

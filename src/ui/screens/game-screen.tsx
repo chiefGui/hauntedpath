@@ -25,6 +25,7 @@ export function GameScreen({ campaign, onBack }: GameScreenProps) {
       <TopBar
         characters={campaign.characters}
         isGroup={campaign.isGroup}
+        isTyping={state.isTyping}
         onBack={onBack}
       />
 

@@ -1,4 +1,10 @@
-export type MessageType = 'text' | 'image' | 'system'
+export const MessageType = {
+  Text: 'text',
+  Image: 'image',
+  System: 'system',
+} as const
+
+export type MessageType = (typeof MessageType)[keyof typeof MessageType]
 
 export type Message = {
   id: string
@@ -8,10 +14,18 @@ export type Message = {
   delay?: number
 }
 
+export const ChoiceType = {
+  Text: 'text',
+  Action: 'action',
+} as const
+
+export type ChoiceType = (typeof ChoiceType)[keyof typeof ChoiceType]
+
 export type Choice = {
   id: string
   text: string
   nextBeatId: string
+  type?: ChoiceType
 }
 
 export type Beat = {
@@ -21,10 +35,19 @@ export type Beat = {
   isEnding?: boolean
 }
 
+export const ContactStatus = {
+  Online: 'online',
+  Offline: 'offline',
+  Away: 'away',
+} as const
+
+export type ContactStatus = (typeof ContactStatus)[keyof typeof ContactStatus]
+
 export type Character = {
   id: string
   name: string
   avatar: string
+  status?: ContactStatus
 }
 
 export type Campaign = {
@@ -104,11 +127,13 @@ export function selectChoice(
   state: GameState,
   choice: Choice,
 ): GameState {
+  const isAction = choice.type === ChoiceType.Action
+
   const playerMessage: DisplayedMessage = {
     id: crypto.randomUUID(),
     messageId: `player-${choice.id}`,
-    sender: 'player',
-    type: 'text',
+    sender: isAction ? 'system' : 'player',
+    type: isAction ? MessageType.System : MessageType.Text,
     content: choice.text,
     timestamp: Date.now(),
     status: 'sent',
