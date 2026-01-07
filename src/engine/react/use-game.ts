@@ -21,7 +21,15 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
   useEffect(() => {
     async function init() {
       const saved = await loadGame(campaign.id)
-      if (saved) {
+
+      // If save exists but is incompatible, delete it and start fresh
+      if (saved && (!saved.state.presence || !saved.state.choicePrompts)) {
+        await deleteGame(campaign.id)
+      }
+
+      const validSave = saved?.state.presence && saved?.state.choicePrompts
+
+      if (validSave) {
         setState(saved.state)
       } else {
         let initialState = GameStateService.create(campaign)

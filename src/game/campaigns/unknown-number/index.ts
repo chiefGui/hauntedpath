@@ -41,8 +41,8 @@ export const unknownNumberCampaign: Campaign = {
   meta: {
     genre: ['Horror', 'Thriller', 'Mystery'],
     duration: '10-15 min',
-    rating: 'TV-MA',
-    year: 2024,
+    rating: 'Mature',
+    year: 2026,
     longDescription:
       "You're alone in your apartment when your phone lights up with a message from an unknown number. What starts as a wrong number quickly turns sinister as the stranger reveals they know things about you they shouldn't. Every choice you make could be your last. Will you survive until morning, or become another victim of the voice in the dark?",
   },
