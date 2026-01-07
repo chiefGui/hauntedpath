@@ -22,7 +22,17 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
     async function init() {
       const saved = await loadGame(campaign.id)
       if (saved) {
-        setState(saved.state)
+        // Migrate old saves that may be missing new fields
+        let loadedState = saved.state
+        if (!loadedState.presence || !loadedState.choicePrompts) {
+          const freshState = GameStateService.create(campaign)
+          loadedState = {
+            ...loadedState,
+            presence: loadedState.presence ?? freshState.presence,
+            choicePrompts: loadedState.choicePrompts ?? [],
+          }
+        }
+        setState(loadedState)
       } else {
         let initialState = GameStateService.create(campaign)
         const startBeat = campaign.beats[campaign.startBeatId]
