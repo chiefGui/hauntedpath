@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { deleteGame, loadGame, saveGame } from '../persistence'
-import type { Campaign, Choice, CharacterPresence, GameState } from '../story-engine'
+import type { Campaign, Choice, GameState } from '../story-engine'
 import {
   addChoicePrompt,
   addDisplayedMessage,
   applyPresenceChanges,
-  ContactStatus,
   createInitialState,
   getAvailableChoices,
   getCharacterPresence,
@@ -18,38 +17,6 @@ import {
 
 const DEFAULT_TYPING_DELAY = 800
 const DEFAULT_MESSAGE_DELAY = 400
-
-// Migrate old saved states to include new fields
-function migrateState(state: Partial<GameState>, campaign: Campaign): GameState {
-  const now = Date.now()
-
-  // Ensure choicePrompts exists
-  const choicePrompts = state.choicePrompts ?? []
-
-  // Ensure presence exists
-  let presence = state.presence
-  if (!presence) {
-    presence = {} as Record<string, CharacterPresence>
-    for (const character of campaign.characters) {
-      presence[character.id] = {
-        status: character.status ?? ContactStatus.Offline,
-        lastSeenAt: character.status === ContactStatus.Offline ? now : undefined,
-      }
-    }
-  }
-
-  return {
-    campaignId: state.campaignId ?? campaign.id,
-    currentBeatId: state.currentBeatId ?? campaign.startBeatId,
-    displayedMessages: state.displayedMessages ?? [],
-    choicePrompts,
-    isTyping: state.isTyping ?? false,
-    visitedBeatIds: state.visitedBeatIds ?? [campaign.startBeatId],
-    startedAt: state.startedAt ?? now,
-    lastPlayedAt: state.lastPlayedAt ?? now,
-    presence,
-  }
-}
 
 export type UseGameOptions = {
   autoSave?: boolean
@@ -67,9 +34,7 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
     async function init() {
       const saved = await loadGame(campaign.id)
       if (saved) {
-        // Migrate old saves to include new fields (presence, choicePrompts)
-        const migratedState = migrateState(saved.state, campaign)
-        setState(migratedState)
+        setState(saved.state)
       } else {
         // Create initial state and apply presence changes from starting beat
         let initialState = createInitialState(campaign)

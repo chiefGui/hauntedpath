@@ -82,3 +82,8 @@ export async function getAllSavedGames(): Promise<SavedGame[]> {
   const db = await getDB()
   return db.getAll(STORE_NAME)
 }
+
+export async function clearAllData(): Promise<void> {
+  const db = await getDB()
+  await db.clear(STORE_NAME)
+}

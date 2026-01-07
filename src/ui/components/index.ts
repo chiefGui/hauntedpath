@@ -1,6 +1,7 @@
 export * from './campaign-card'
 export * from './chat-view'
 export * from './choice-picker'
+export * from './error-boundary'
 export * from './message-bubble'
 export * from './top-bar'
 export * from './typing-indicator'
