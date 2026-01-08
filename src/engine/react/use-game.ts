@@ -16,19 +16,23 @@ export type UseGameOptions = {
 }
 
 export type IncomingMessageEvent = {
+  id: string
   conversationId: string
   content: string
   sender: string
 }
+
+const NOTIFICATION_DURATION = 4000 // 4 seconds per notification
 
 export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
   const { autoSave = true } = options
   const [state, setState] = useState<GameState | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isProcessing, setIsProcessing] = useState(false)
-  const [incomingMessage, setIncomingMessage] =
-    useState<IncomingMessageEvent | null>(null)
+  const [notifications, setNotifications] = useState<IncomingMessageEvent[]>([])
   const timeoutsRef = useRef<number[]>([])
+  const notificationTimeoutsRef = useRef<Map<string, number>>(new Map())
+  const notificationIdRef = useRef(0)
 
   const isMultiChat = CampaignService.isMultiChat(campaign)
 
@@ -112,13 +116,24 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
           state.currentConversationId &&
           conversationId !== state.currentConversationId
         ) {
-          setIncomingMessage({
+          const notificationId = `notification-${++notificationIdRef.current}`
+          const newNotification: IncomingMessageEvent = {
+            id: notificationId,
             conversationId,
             content: nextItem.content,
             sender: nextItem.sender,
-          })
-          // Auto-clear notification after 3 seconds
-          setTimeout(() => setIncomingMessage(null), 3000)
+          }
+
+          setNotifications((prev) => [...prev, newNotification])
+
+          // Auto-dismiss this specific notification after duration
+          const timeout = window.setTimeout(() => {
+            setNotifications((prev) =>
+              prev.filter((n) => n.id !== notificationId),
+            )
+            notificationTimeoutsRef.current.delete(notificationId)
+          }, NOTIFICATION_DURATION)
+          notificationTimeoutsRef.current.set(notificationId, timeout)
         }
 
         const nextTimeout = window.setTimeout(() => {
@@ -143,6 +158,7 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
   useEffect(() => {
     return () => {
       timeoutsRef.current.forEach((t) => clearTimeout(t))
+      notificationTimeoutsRef.current.forEach((t) => clearTimeout(t))
     }
   }, [])
 
@@ -170,20 +186,37 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
     [campaign, state],
   )
 
+  const dismissNotification = useCallback((notificationId: string) => {
+    // Clear the timeout for this notification
+    const timeout = notificationTimeoutsRef.current.get(notificationId)
+    if (timeout) {
+      clearTimeout(timeout)
+      notificationTimeoutsRef.current.delete(notificationId)
+    }
+    // Remove from queue
+    setNotifications((prev) => prev.filter((n) => n.id !== notificationId))
+  }, [])
+
   const switchConversation = useCallback(
-    (conversationId: string) => {
+    (conversationId: string, notificationId?: string) => {
       if (!state) return
       setState(GameStateService.switchConversation(state, conversationId))
-      setIncomingMessage(null) // Clear notification when switching
+      // Clear the specific notification that was tapped, if provided
+      if (notificationId) {
+        dismissNotification(notificationId)
+      }
     },
-    [state],
+    [state, dismissNotification],
   )
 
   const restart = useCallback(async () => {
     timeoutsRef.current.forEach((t) => clearTimeout(t))
     timeoutsRef.current = []
+    // Clear all notification timeouts
+    notificationTimeoutsRef.current.forEach((t) => clearTimeout(t))
+    notificationTimeoutsRef.current.clear()
     setIsProcessing(false)
-    setIncomingMessage(null)
+    setNotifications([])
     await deleteGame(campaign.id)
     setState(GameStateService.create(campaign))
   }, [campaign])
@@ -266,9 +299,10 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
     isEnding: ending,
     currentConversationState,
     currentConversationId: state?.currentConversationId,
-    incomingMessage,
+    notifications,
     handleChoice,
     switchConversation,
+    dismissNotification,
     restart,
     getPresence,
     getUnreadCount,

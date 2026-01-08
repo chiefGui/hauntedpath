@@ -26,7 +26,7 @@ export function GameScreen({ campaign, onBack }: GameScreenProps) {
     isEnding,
     currentConversationState,
     currentConversationId,
-    incomingMessage,
+    notifications,
     handleChoice,
     switchConversation,
     restart,
@@ -75,8 +75,8 @@ export function GameScreen({ campaign, onBack }: GameScreenProps) {
   }
 
   // Handle notification tap
-  const handleNotificationTap = (conversationId: string) => {
-    switchConversation(conversationId)
+  const handleNotificationTap = (conversationId: string, notificationId: string) => {
+    switchConversation(conversationId, notificationId)
     setViewState('chat')
   }
 
@@ -122,7 +122,7 @@ export function GameScreen({ campaign, onBack }: GameScreenProps) {
 
         <MessageNotification
           campaign={campaign}
-          message={incomingMessage}
+          notifications={notifications}
           onTap={handleNotificationTap}
         />
       </div>
@@ -175,7 +175,7 @@ export function GameScreen({ campaign, onBack }: GameScreenProps) {
 
       <MessageNotification
         campaign={campaign}
-        message={incomingMessage}
+        notifications={notifications}
         onTap={handleNotificationTap}
       />
     </div>
