@@ -109,7 +109,7 @@ export class StoryTimeService {
     const applied = this.applyTime(result, str)
 
     // If time is earlier than current, assume next day
-    if (applied <= current) {
+    if (applied < current) {
       applied.setDate(applied.getDate() + 1)
     }
 
