@@ -1,8 +1,10 @@
 import { Fragment, useEffect, useRef } from 'react'
 import type {
   Campaign,
+  Character,
   Choice,
   ChoicePrompt,
+  ConversationState,
   DisplayedItem,
   DisplayedMessage,
   GameState,
@@ -10,6 +12,7 @@ import type {
 import {
   CampaignService,
   ChoiceType,
+  GameStateService,
   isDisplayedEvent,
   StoryTimeService,
 } from '../../engine'
@@ -26,25 +29,47 @@ export type ChatViewProps = {
   campaign: Campaign
   state: GameState
   onChoiceSelect?: (choice: Choice) => void
+  // Optional: for multi-chat mode, pass the conversation state directly
+  conversationState?: ConversationState | null
+  // Optional: characters to show in this chat (for multi-chat)
+  conversationCharacters?: Character[]
 }
 
-export function ChatView({ campaign, state, onChoiceSelect }: ChatViewProps) {
+export function ChatView({
+  campaign,
+  state,
+  onChoiceSelect,
+  conversationState,
+  conversationCharacters,
+}: ChatViewProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
+  // Use provided conversation state or fall back to deriving from game state
+  const isMultiChat = GameStateService.isMultiChat(state)
+  const effectiveConvState =
+    conversationState ?? GameStateService.getCurrentConversationState(state)
+
+  const displayedItems = effectiveConvState.displayedItems
+  const choicePrompts = effectiveConvState.choicePrompts
+  const isTyping = effectiveConvState.isTyping
+
+  // Get the typing character - in multi-chat, use conversation characters
+  const typingCharacter = conversationCharacters?.[0] ?? campaign.characters[0] ?? null
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [state.displayedItems.length, state.choicePrompts.length, state.isTyping])
+  }, [displayedItems.length, choicePrompts.length, isTyping])
 
   // Build unified timeline of items and choice prompts
   const timeline: TimelineItem[] = [
-    ...state.displayedItems.map((item) => ({
+    ...displayedItems.map((item) => ({
       type: 'item' as const,
       data: item,
       timestamp: item.timestamp,
       storyTime: item.storyTime,
     })),
-    ...state.choicePrompts.map((prompt) => ({
+    ...choicePrompts.map((prompt) => ({
       type: 'choice' as const,
       data: prompt,
       timestamp: prompt.timestamp,
@@ -54,8 +79,6 @@ export function ChatView({ campaign, state, onChoiceSelect }: ChatViewProps) {
   // Track previous message for spacing logic
   let prevMessage: DisplayedMessage | null = null
   let prevStoryTime: number | undefined
-
-  const typingCharacter = campaign.characters[0] ?? null
 
   return (
     <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
@@ -108,6 +131,11 @@ export function ChatView({ campaign, state, onChoiceSelect }: ChatViewProps) {
 
           prevMessage = message
 
+          // For multi-chat, determine if this is a group chat
+          const isGroup = isMultiChat
+            ? (CampaignService.getConversation(campaign, state.currentConversationId ?? '')?.isGroup ?? false)
+            : campaign.isGroup
+
           return (
             <Fragment key={message.id}>
               {timeHeader && (
@@ -121,7 +149,7 @@ export function ChatView({ campaign, state, onChoiceSelect }: ChatViewProps) {
                   character={character}
                   isPlayer={isPlayer}
                   showAvatar={isFirstFromSender}
-                  isGroup={campaign.isGroup}
+                  isGroup={isGroup}
                 />
               </div>
             </Fragment>
@@ -157,7 +185,7 @@ export function ChatView({ campaign, state, onChoiceSelect }: ChatViewProps) {
         )
       })}
 
-      {state.isTyping && (
+      {isTyping && (
         <TypingIndicator character={typingCharacter} showAvatar />
       )}
 
