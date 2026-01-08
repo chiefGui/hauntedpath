@@ -14,6 +14,7 @@ export type MessageItem = {
   content: string
   delay?: number
   at?: string // e.g., "2:47 AM", "+5m" - overrides beat's at
+  conversationId?: string // which conversation this message goes to (multi-chat mode)
 }
 
 // Event: narrative happening (centered text, not a bubble)
@@ -23,6 +24,7 @@ export type EventItem = {
   content: string
   delay?: number
   at?: string // e.g., "2:47 AM", "+5m" - overrides beat's at
+  conversationId?: string // which conversation this event goes to (multi-chat mode)
 }
 
 // Union type for beat items
@@ -41,6 +43,7 @@ export type DisplayedMessage = {
   timestamp: number // runtime timestamp for ordering
   storyTime?: number // in-story time (parsed from at field)
   status: MessageStatus
+  conversationId?: string // which conversation this belongs to (multi-chat mode)
 }
 
 export type DisplayedEvent = {
@@ -50,6 +53,7 @@ export type DisplayedEvent = {
   content: string
   timestamp: number // runtime timestamp for ordering
   storyTime?: number // in-story time (parsed from at field)
+  conversationId?: string // which conversation this belongs to (multi-chat mode)
 }
 
 export type DisplayedItem = DisplayedMessage | DisplayedEvent
@@ -75,6 +79,7 @@ export class MessageService {
   static createDisplayedMessage(
     item: MessageItem,
     storyTime?: number,
+    conversationId?: string,
   ): DisplayedMessage {
     return {
       id: crypto.randomUUID(),
@@ -85,12 +90,14 @@ export class MessageService {
       timestamp: Date.now(),
       storyTime,
       status: 'delivered',
+      conversationId: item.conversationId ?? conversationId,
     }
   }
 
   static createDisplayedEvent(
     item: EventItem,
     storyTime?: number,
+    conversationId?: string,
   ): DisplayedEvent {
     return {
       id: crypto.randomUUID(),
@@ -99,17 +106,26 @@ export class MessageService {
       content: item.content,
       timestamp: Date.now(),
       storyTime,
+      conversationId: item.conversationId ?? conversationId,
     }
   }
 
-  static createDisplayed(item: BeatItem, storyTime?: number): DisplayedItem {
+  static createDisplayed(
+    item: BeatItem,
+    storyTime?: number,
+    conversationId?: string,
+  ): DisplayedItem {
     if (isMessage(item)) {
-      return this.createDisplayedMessage(item, storyTime)
+      return this.createDisplayedMessage(item, storyTime, conversationId)
     }
-    return this.createDisplayedEvent(item, storyTime)
+    return this.createDisplayedEvent(item, storyTime, conversationId)
   }
 
-  static createPlayerMessage(content: string, choiceId: string): DisplayedMessage {
+  static createPlayerMessage(
+    content: string,
+    choiceId: string,
+    conversationId?: string,
+  ): DisplayedMessage {
     return {
       id: crypto.randomUUID(),
       itemId: `player-${choiceId}`,
@@ -118,6 +134,7 @@ export class MessageService {
       content,
       timestamp: Date.now(),
       status: 'sent',
+      conversationId,
     }
   }
 }

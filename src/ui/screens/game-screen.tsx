@@ -1,7 +1,13 @@
 import { useState } from 'react'
 import type { Campaign } from '../../engine'
-import { useGame, useSettings } from '../../engine'
-import { CampaignMenu, ChatView, TopBar } from '../components'
+import { CampaignService, useGame, useSettings } from '../../engine'
+import {
+  CampaignMenu,
+  ChatView,
+  ConversationList,
+  MessageNotification,
+  TopBar,
+} from '../components'
 import { Button } from '../primitives'
 
 export type GameScreenProps = {
@@ -9,18 +15,27 @@ export type GameScreenProps = {
   onBack: () => void
 }
 
+type ViewState = 'chat' | 'conversations'
+
 export function GameScreen({ campaign, onBack }: GameScreenProps) {
   const {
     state,
     isLoading,
     isProcessing,
+    isMultiChat,
     isEnding,
+    currentConversationState,
+    currentConversationId,
+    incomingMessage,
     handleChoice,
+    switchConversation,
     restart,
     getPresence,
+    getUnreadCount,
   } = useGame(campaign)
   const { accentColor, setAccentColor } = useSettings()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [viewState, setViewState] = useState<ViewState>('chat')
 
   if (isLoading || !state) {
     return (
@@ -30,17 +45,99 @@ export function GameScreen({ campaign, onBack }: GameScreenProps) {
     )
   }
 
-  const primaryCharacter = campaign.characters[0]
+  // Determine which characters to show based on mode
+  const currentConversation = isMultiChat && currentConversationId
+    ? CampaignService.getConversation(campaign, currentConversationId)
+    : null
+
+  const conversationCharacters = isMultiChat && currentConversationId
+    ? CampaignService.getConversationCharacters(campaign, currentConversationId)
+    : campaign.characters
+
+  const primaryCharacter = conversationCharacters[0]
   const presence = primaryCharacter ? getPresence(primaryCharacter.id) : null
 
+  // Handle back button
+  const handleBackPress = () => {
+    if (isMultiChat && viewState === 'chat') {
+      // In multi-chat mode, go to conversation list first
+      setViewState('conversations')
+    } else {
+      // Exit to home
+      onBack()
+    }
+  }
+
+  // Handle conversation selection from list
+  const handleSelectConversation = (conversationId: string) => {
+    switchConversation(conversationId)
+    setViewState('chat')
+  }
+
+  // Handle notification tap
+  const handleNotificationTap = (conversationId: string) => {
+    switchConversation(conversationId)
+    setViewState('chat')
+  }
+
+  // Multi-chat: Show conversation list view
+  if (isMultiChat && viewState === 'conversations' && state.conversationStates) {
+    return (
+      <div className="flex flex-col h-full">
+        {/* Back button header */}
+        <div className="flex items-center h-14 px-2 bg-card border-b border-border">
+          <Button
+            onClick={onBack}
+            variant="ghost"
+            size="icon"
+            className="shrink-0 -ml-1"
+          >
+            <svg
+              width="10"
+              height="18"
+              viewBox="0 0 10 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9 1L1 9L9 17"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </Button>
+          <span className="ml-2 text-primary font-medium">Back</span>
+        </div>
+
+        <ConversationList
+          campaign={campaign}
+          conversationStates={state.conversationStates}
+          currentConversationId={currentConversationId}
+          getPresence={getPresence}
+          getUnreadCount={getUnreadCount}
+          onSelectConversation={handleSelectConversation}
+        />
+
+        <MessageNotification
+          campaign={campaign}
+          message={incomingMessage}
+          onTap={handleNotificationTap}
+        />
+      </div>
+    )
+  }
+
+  // Chat view (single-chat mode or selected conversation)
   return (
     <div className="flex flex-col h-full">
       <TopBar
-        characters={campaign.characters}
-        isGroup={campaign.isGroup}
-        isTyping={state.isTyping}
+        characters={conversationCharacters}
+        isGroup={currentConversation?.isGroup ?? campaign.isGroup}
+        isTyping={currentConversationState?.isTyping ?? state.isTyping}
         presence={presence}
-        onBack={onBack}
+        onBack={handleBackPress}
         onMenuOpen={() => setMenuOpen(true)}
       />
 
@@ -48,9 +145,11 @@ export function GameScreen({ campaign, onBack }: GameScreenProps) {
         campaign={campaign}
         state={state}
         onChoiceSelect={handleChoice}
+        conversationState={currentConversationState}
+        conversationCharacters={conversationCharacters}
       />
 
-      {isEnding && !isProcessing && !state.isTyping && (
+      {isEnding && !isProcessing && !(currentConversationState?.isTyping ?? state.isTyping) && (
         <div className="flex flex-col gap-3 p-4 bg-card border-t border-border">
           <p className="text-center text-sm text-muted-foreground">
             End of story
@@ -72,6 +171,12 @@ export function GameScreen({ campaign, onBack }: GameScreenProps) {
         onOpenChange={setMenuOpen}
         accentColor={accentColor}
         onAccentColorChange={setAccentColor}
+      />
+
+      <MessageNotification
+        campaign={campaign}
+        message={incomingMessage}
+        onTap={handleNotificationTap}
       />
     </div>
   )
