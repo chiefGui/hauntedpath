@@ -82,7 +82,6 @@ export function useGame(campaign: Campaign, options: UseGameOptions = {}) {
 
     // Determine which conversation this item belongs to
     const conversationId = GameStateService.getItemConversationId(
-      campaign,
       state,
       nextItem,
     )

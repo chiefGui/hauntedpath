@@ -210,7 +210,6 @@ export class GameStateService {
 
   // Determine which conversation an item belongs to
   static getItemConversationId(
-    campaign: Campaign,
     state: GameState,
     item: BeatItem,
   ): string | undefined {
