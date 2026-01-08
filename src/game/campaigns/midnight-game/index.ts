@@ -1,6 +1,5 @@
 import {
   BeatItemKind,
-  ChoiceType,
   ContactStatus,
   type Campaign,
 } from '../../../engine'
@@ -17,18 +16,6 @@ const taylorAvatar = `data:image/svg+xml,${encodeURIComponent(`
 </svg>
 `)}`
 
-// Taylor's mom avatar - older, warm
-const lindaAvatar = `data:image/svg+xml,${encodeURIComponent(`
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <circle cx="50" cy="50" r="50" fill="#059669"/>
-  <circle cx="50" cy="38" r="18" fill="#d4a574"/>
-  <ellipse cx="50" cy="82" rx="28" ry="24" fill="#d4a574"/>
-  <circle cx="42" cy="36" r="2.5" fill="#1e3a29"/>
-  <circle cx="58" cy="36" r="2.5" fill="#1e3a29"/>
-  <path d="M 44 44 Q 50 46 56 44" stroke="#1e3a29" stroke-width="1.5" fill="none"/>
-</svg>
-`)}`
-
 // Player avatar
 const playerAvatar = `data:image/svg+xml,${encodeURIComponent(`
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
@@ -38,48 +25,47 @@ const playerAvatar = `data:image/svg+xml,${encodeURIComponent(`
 </svg>
 `)}`
 
-// Cover image - candle in darkness
+// Cover image - phone screen glow in darkness
 const coverImage = `data:image/svg+xml,${encodeURIComponent(`
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#0a0a0a"/>
-      <stop offset="100%" style="stop-color:#1a0a0a"/>
+      <stop offset="100%" style="stop-color:#1a0a1a"/>
     </linearGradient>
-    <radialGradient id="glow" cx="50%" cy="70%" r="30%">
-      <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:0.4"/>
-      <stop offset="100%" style="stop-color:#ff6b35;stop-opacity:0"/>
+    <radialGradient id="glow" cx="50%" cy="50%" r="35%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0"/>
     </radialGradient>
   </defs>
   <rect width="400" height="225" fill="url(#bg)"/>
-  <ellipse cx="200" cy="160" rx="60" ry="40" fill="url(#glow)"/>
-  <rect x="195" y="120" width="10" height="40" fill="#f5f5dc"/>
-  <ellipse cx="200" cy="115" rx="8" ry="12" fill="#ff6b35"/>
-  <ellipse cx="200" cy="110" rx="4" ry="8" fill="#ffcc00"/>
-  <text x="200" y="50" font-family="system-ui" font-size="24" fill="#3a1a1a" text-anchor="middle" font-weight="bold">THE MIDNIGHT GAME</text>
+  <ellipse cx="200" cy="112" rx="80" ry="60" fill="url(#glow)"/>
+  <rect x="175" y="70" width="50" height="85" rx="5" fill="#1a1a2a" stroke="#333" stroke-width="1"/>
+  <rect x="180" y="78" width="40" height="65" fill="#0f172a"/>
+  <text x="200" y="195" font-family="system-ui" font-size="18" fill="#4a4a6a" text-anchor="middle">Do you remember?</text>
 </svg>
 `)}`
 
 export const midnightGameCampaign: Campaign = {
   id: 'midnight-game',
-  title: 'The Midnight Game',
+  title: 'Do You Remember?',
   description:
-    "11:47 PM. Your best friend Taylor texts you. She sounds scared. She needs you to play a game with her. Tonight. Before midnight.",
+    "11:47 PM. Taylor texts you out of the blue. She wants to reminisce. But some of the memories don't match yours.",
   coverImage,
   meta: {
-    genre: ['Horror', 'Supernatural', 'Psychological'],
+    genre: ['Horror', 'Psychological', 'Mystery'],
     duration: '15-20 min',
     rating: 'Mature',
     year: 2026,
     longDescription:
-      "Taylor has always been the skeptic - the one who laughs at horror movies and mocks chain messages. So when she texts you late at night, terrified, begging you to play some old ritual game with her, you know something is very wrong. As you follow her increasingly strange instructions, you begin to wonder: is this really Taylor? And if it isn't... what have you invited into your home?",
+      "You haven't heard from Taylor in a while. When she texts late at night wanting to catch up, you're happy to hear from her. But as you talk, something feels off. The details don't quite line up. The memories she shares aren't the ones you have. And the more you talk, the less sure you are about what's real.",
   },
   protagonist: {
     id: 'player',
-    name: 'Hazel',
+    name: 'Mia',
     avatar: playerAvatar,
-    age: 22,
-    bio: 'College senior, sharing an apartment near campus. Taylor has been your best friend since freshman year.',
+    age: 23,
+    bio: 'Taylor has been your best friend since high school. You tell each other everything.',
   },
   characters: [
     {
@@ -87,23 +73,12 @@ export const midnightGameCampaign: Campaign = {
       name: 'Taylor',
       avatar: taylorAvatar,
     },
-    {
-      id: 'linda',
-      name: 'Linda (Taylor\'s Mom)',
-      avatar: lindaAvatar,
-    },
   ],
-  // Multi-chat mode
   conversations: [
     {
       id: 'taylor-chat',
       characterIds: ['taylor'],
       name: 'Taylor',
-    },
-    {
-      id: 'linda-chat',
-      characterIds: ['linda'],
-      name: "Taylor's Mom",
     },
   ],
   startConversationId: 'taylor-chat',
@@ -113,21 +88,20 @@ export const midnightGameCampaign: Campaign = {
   startBeatId: 'start',
   beats: {
     // ============================================
-    // ACT 1: THE SETUP
+    // ACT 1: NORMAL CATCH-UP
     // ============================================
     start: {
       id: 'start',
       at: '11:47 PM',
       presenceChanges: {
         taylor: { status: ContactStatus.Online },
-        linda: { status: ContactStatus.Offline },
       },
       items: [
         {
           kind: BeatItemKind.Message,
           id: 'msg-1',
           sender: 'taylor',
-          content: 'hey',
+          content: 'hey stranger',
           delay: 1500,
           conversationId: 'taylor-chat',
         },
@@ -143,46 +117,46 @@ export const midnightGameCampaign: Campaign = {
       choices: [
         {
           id: 'choice-1a',
-          text: "Yeah what's up?",
-          nextBeatId: 'taylor-explains',
+          text: 'omg hi!! its been forever',
+          nextBeatId: 'catch-up-warm',
         },
         {
           id: 'choice-1b',
-          text: "Barely. It's almost midnight lol",
-          nextBeatId: 'taylor-explains',
+          text: 'hey! yeah cant sleep. whats up?',
+          nextBeatId: 'catch-up-casual',
         },
         {
           id: 'choice-1c',
-          text: 'Tay? You okay?',
-          nextBeatId: 'taylor-explains-worried',
+          text: 'taylor! i was literally just thinking about you',
+          nextBeatId: 'catch-up-warm',
         },
       ],
     },
 
-    'taylor-explains': {
-      id: 'taylor-explains',
+    'catch-up-warm': {
+      id: 'catch-up-warm',
       items: [
         {
           kind: BeatItemKind.Message,
           id: 'msg-3',
           sender: 'taylor',
-          content: 'i need you to do something with me',
-          delay: 2000,
+          content: 'i know right',
+          delay: 1800,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-4',
           sender: 'taylor',
-          content: 'tonight',
-          delay: 1500,
+          content: 'i was just lying here and started thinking about old times',
+          delay: 2200,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-5',
           sender: 'taylor',
-          content: 'before midnight',
+          content: 'felt like i had to text you',
           delay: 1800,
           conversationId: 'taylor-chat',
         },
@@ -190,49 +164,49 @@ export const midnightGameCampaign: Campaign = {
       choices: [
         {
           id: 'choice-2a',
-          text: 'What is it?',
-          nextBeatId: 'the-game-intro',
+          text: 'aw i love that. what were you thinking about?',
+          nextBeatId: 'first-memory',
         },
         {
           id: 'choice-2b',
-          text: "That's in like 10 minutes. What's going on?",
-          nextBeatId: 'the-game-intro',
+          text: 'same honestly. feels like we never talk anymore',
+          nextBeatId: 'first-memory',
         },
       ],
     },
 
-    'taylor-explains-worried': {
-      id: 'taylor-explains-worried',
+    'catch-up-casual': {
+      id: 'catch-up-casual',
       items: [
         {
           kind: BeatItemKind.Message,
           id: 'msg-6',
           sender: 'taylor',
-          content: 'i need your help',
-          delay: 2200,
+          content: 'nothing really',
+          delay: 1500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-7',
           sender: 'taylor',
-          content: 'please',
-          delay: 1500,
+          content: 'just been thinking about stuff',
+          delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-8',
           sender: 'taylor',
-          content: 'i found this thing and i need someone to do it with me',
-          delay: 2500,
+          content: 'you know how it is when you cant sleep',
+          delay: 2200,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-9',
           sender: 'taylor',
-          content: 'before midnight',
+          content: 'your brain just goes places',
           delay: 1800,
           conversationId: 'taylor-chat',
         },
@@ -240,57 +214,44 @@ export const midnightGameCampaign: Campaign = {
       choices: [
         {
           id: 'choice-3a',
-          text: 'What thing? Tay you sound scared',
-          nextBeatId: 'the-game-intro',
+          text: 'yeah totally. what kind of stuff?',
+          nextBeatId: 'first-memory',
         },
         {
           id: 'choice-3b',
-          text: "Okay okay I'm here. What do you need?",
-          nextBeatId: 'the-game-intro',
+          text: 'god yes. my brain does NOT shut up at night',
+          nextBeatId: 'first-memory',
         },
       ],
     },
 
-    'the-game-intro': {
-      id: 'the-game-intro',
+    // ============================================
+    // FIRST MEMORY - seems normal
+    // ============================================
+    'first-memory': {
+      id: 'first-memory',
       items: [
         {
           kind: BeatItemKind.Message,
           id: 'msg-10',
           sender: 'taylor',
-          content: "it's called the midnight game",
-          delay: 2000,
+          content: 'do you remember that roadtrip we took after graduation',
+          delay: 2500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-11',
           sender: 'taylor',
-          content: 'its an old ritual',
-          delay: 1800,
+          content: 'when we drove to the coast',
+          delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-12',
           sender: 'taylor',
-          content: "you have to do it exactly right or it doesn't work",
-          delay: 2200,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-13',
-          sender: 'taylor',
-          content: 'please hazel',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-14',
-          sender: 'taylor',
-          content: 'i cant do it alone',
+          content: 'that was such a good trip',
           delay: 1800,
           conversationId: 'taylor-chat',
         },
@@ -298,143 +259,183 @@ export const midnightGameCampaign: Campaign = {
       choices: [
         {
           id: 'choice-4a',
-          text: "Taylor this isn't like you. What's really going on?",
-          nextBeatId: 'taylor-deflects',
+          text: 'YES omg that was the best. remember that weird motel?',
+          nextBeatId: 'memory-motel',
         },
         {
           id: 'choice-4b',
-          text: "Okay fine. What do I need to do?",
-          nextBeatId: 'first-instructions',
-        },
-        {
-          id: 'choice-4c',
-          text: "A ritual? Come on, you're the one who says this stuff is fake",
-          nextBeatId: 'taylor-insists',
+          text: 'i think about that trip all the time honestly',
+          nextBeatId: 'memory-expand',
         },
       ],
     },
 
-    'taylor-deflects': {
-      id: 'taylor-deflects',
+    'memory-motel': {
+      id: 'memory-motel',
       items: [
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-13',
+          sender: 'taylor',
+          content: 'the one with the pool',
+          delay: 2000,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-14',
+          sender: 'taylor',
+          content: 'we went swimming at like 2am',
+          delay: 2200,
+          conversationId: 'taylor-chat',
+        },
         {
           kind: BeatItemKind.Message,
           id: 'msg-15',
           sender: 'taylor',
-          content: "i'll explain after",
+          content: 'and that guy from the front desk came out and yelled at us',
           delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-16',
-          sender: 'taylor',
-          content: 'please just trust me',
-          delay: 1800,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-17',
-          sender: 'taylor',
-          content: 'we dont have much time',
-          delay: 2000,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
           id: 'choice-5a',
-          text: '... fine. What do I do?',
-          nextBeatId: 'first-instructions',
+          text: 'haha yes! we were SO loud',
+          nextBeatId: 'first-wrong-detail',
         },
         {
           id: 'choice-5b',
-          text: "No. Tell me what's wrong first.",
-          nextBeatId: 'taylor-gets-desperate',
+          text: 'lmao i cant believe we didnt get kicked out',
+          nextBeatId: 'first-wrong-detail',
         },
       ],
     },
 
-    'taylor-insists': {
-      id: 'taylor-insists',
+    'memory-expand': {
+      id: 'memory-expand',
       items: [
         {
           kind: BeatItemKind.Message,
-          id: 'msg-18',
+          id: 'msg-16',
           sender: 'taylor',
-          content: 'i know',
+          content: 'me too',
           delay: 1500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
-          id: 'msg-19',
+          id: 'msg-17',
           sender: 'taylor',
-          content: 'i know i always said that',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-20',
-          sender: 'taylor',
-          content: 'but something happened',
+          content: 'remember when we stopped at that diner',
           delay: 2200,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
-          id: 'msg-21',
+          id: 'msg-18',
           sender: 'taylor',
-          content: 'and i need to finish this',
+          content: 'and the waitress thought we were sisters',
           delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-22',
-          sender: 'taylor',
-          content: 'please',
-          delay: 1500,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
           id: 'choice-6a',
-          text: "Alright. I'm in. Tell me what to do.",
-          nextBeatId: 'first-instructions',
+          text: 'haha i mean we basically are at this point',
+          nextBeatId: 'first-wrong-detail',
         },
         {
           id: 'choice-6b',
-          text: "Taylor you're scaring me. What happened?",
-          nextBeatId: 'taylor-gets-desperate',
+          text: 'people always think that! its the hair i think',
+          nextBeatId: 'first-wrong-detail',
         },
       ],
     },
 
-    'taylor-gets-desperate': {
-      id: 'taylor-gets-desperate',
+    // ============================================
+    // FIRST WRONG DETAIL - subtle
+    // ============================================
+    'first-wrong-detail': {
+      id: 'first-wrong-detail',
       items: [
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
+          id: 'msg-19',
+          sender: 'taylor',
+          content: 'that whole summer was perfect honestly',
+          delay: 2200,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-20',
+          sender: 'taylor',
+          content: 'before you moved in with jake',
+          delay: 2000,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-21',
+          sender: 'taylor',
+          content: 'things got so busy after that',
+          delay: 1800,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-7a',
+          text: 'wait what? i never moved in with jake',
+          nextBeatId: 'correction-jake',
+        },
+        {
+          id: 'choice-7b',
+          text: 'who is jake?',
+          nextBeatId: 'correction-jake',
+        },
+        {
+          id: 'choice-7c',
+          text: 'yeah things definitely changed after that summer',
+          nextBeatId: 'go-along-jake',
+        },
+      ],
+    },
+
+    'correction-jake': {
+      id: 'correction-jake',
+      items: [
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-22',
+          sender: 'taylor',
+          content: 'wait seriously?',
+          delay: 2000,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
           id: 'msg-23',
-          content: 'Taylor is typing...',
-          delay: 3000,
+          sender: 'taylor',
+          content: 'oh my god im so tired lol',
+          delay: 2200,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-24',
-          content: 'Taylor stopped typing.',
-          delay: 2500,
+          sender: 'taylor',
+          content: 'i dont know why i said that',
+          delay: 1800,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-25',
-          content: 'Taylor is typing...',
+          sender: 'taylor',
+          content: 'i meant after you started that job',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
@@ -442,154 +443,41 @@ export const midnightGameCampaign: Campaign = {
           kind: BeatItemKind.Message,
           id: 'msg-26',
           sender: 'taylor',
-          content: 'hazel please',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-27',
-          sender: 'taylor',
-          content: 'i need you',
+          content: 'at the coffee shop',
           delay: 1500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-28',
-          sender: 'taylor',
-          content: 'it has to be tonight',
-          delay: 1800,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-29',
-          sender: 'taylor',
-          content: 'it has to be NOW',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-      ],
-      choices: [
-        {
-          id: 'choice-7a',
-          text: 'Okay okay! Just tell me what to do.',
-          nextBeatId: 'first-instructions',
-        },
-        {
-          id: 'choice-7b',
-          text: "I'm calling you.",
-          nextBeatId: 'cant-call',
-        },
-      ],
-    },
-
-    'cant-call': {
-      id: 'cant-call',
-      items: [
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-30',
-          content: 'You try to call Taylor. It goes straight to voicemail.',
-          delay: 3000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-31',
-          sender: 'taylor',
-          content: 'dont call',
-          delay: 1500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-32',
-          sender: 'taylor',
-          content: 'it has to be through text',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-33',
-          sender: 'taylor',
-          content: "that's part of the rules",
-          delay: 1800,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
           id: 'choice-8a',
-          text: "Fine. What are the rules?",
-          nextBeatId: 'first-instructions',
+          text: 'lol no worries. yeah that job was exhausting',
+          nextBeatId: 'second-memory',
         },
         {
           id: 'choice-8b',
-          text: "This is insane. I'm going to sleep.",
-          nextBeatId: 'try-to-leave',
+          text: 'tay i never worked at a coffee shop either',
+          nextBeatId: 'second-correction',
         },
       ],
     },
 
-    'try-to-leave': {
-      id: 'try-to-leave',
+    'go-along-jake': {
+      id: 'go-along-jake',
       items: [
         {
           kind: BeatItemKind.Message,
-          id: 'msg-34',
+          id: 'msg-27',
           sender: 'taylor',
-          content: 'no',
-          delay: 1000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-35',
-          sender: 'taylor',
-          content: 'no no no',
-          delay: 1200,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-36',
-          sender: 'taylor',
-          content: 'hazel if you dont help me',
+          content: 'how is he btw',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
-          id: 'msg-37',
+          id: 'msg-28',
           sender: 'taylor',
-          content: 'something bad will happen',
-          delay: 2200,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-38',
-          sender: 'taylor',
-          content: 'please',
-          delay: 1500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-39',
-          sender: 'taylor',
-          content: 'youre my best friend',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-40',
-          sender: 'taylor',
-          content: 'i would do it for you',
+          content: 'you guys still together?',
           delay: 1800,
           conversationId: 'taylor-chat',
         },
@@ -597,128 +485,287 @@ export const midnightGameCampaign: Campaign = {
       choices: [
         {
           id: 'choice-9a',
-          text: '... okay. Tell me what to do.',
-          nextBeatId: 'first-instructions',
+          text: 'taylor i seriously dont know who jake is',
+          nextBeatId: 'second-correction',
         },
         {
           id: 'choice-9b',
-          text: "Goodnight Taylor. We'll talk tomorrow.",
-          nextBeatId: 'ending-refuse',
+          text: 'are you thinking of someone else maybe?',
+          nextBeatId: 'second-correction',
         },
       ],
     },
 
-    // ============================================
-    // ACT 2: THE RITUAL
-    // ============================================
-    'first-instructions': {
-      id: 'first-instructions',
-      at: '11:51 PM',
+    'second-correction': {
+      id: 'second-correction',
       items: [
         {
           kind: BeatItemKind.Message,
-          id: 'msg-41',
+          id: 'msg-29',
           sender: 'taylor',
-          content: 'okay',
+          content: 'haha ok now youre messing with me',
+          delay: 2200,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-30',
+          sender: 'taylor',
+          content: 'jake',
           delay: 1500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
-          id: 'msg-42',
+          id: 'msg-31',
           sender: 'taylor',
-          content: 'first you need a candle',
-          delay: 2000,
+          content: 'tall guy',
+          delay: 1200,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
-          id: 'msg-43',
+          id: 'msg-32',
           sender: 'taylor',
-          content: 'do you have one?',
+          content: 'you met him at that party',
           delay: 1800,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-33',
+          sender: 'taylor',
+          content: 'i introduced you',
+          delay: 1500,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
           id: 'choice-10a',
-          text: 'Yeah I think so. Hold on.',
-          nextBeatId: 'get-candle',
+          text: 'what party? tay im not joking',
+          nextBeatId: 'taylor-insists',
         },
         {
           id: 'choice-10b',
-          text: 'Let me check',
-          nextBeatId: 'get-candle',
+          text: 'i think youre thinking of someone else',
+          nextBeatId: 'taylor-insists',
         },
       ],
     },
 
-    'get-candle': {
-      id: 'get-candle',
+    // ============================================
+    // TAYLOR INSISTS
+    // ============================================
+    'taylor-insists': {
+      id: 'taylor-insists',
       items: [
         {
-          kind: BeatItemKind.Event,
-          id: 'msg-44',
-          content: 'You rummage through your drawers and find an old candle.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
           kind: BeatItemKind.Message,
-          id: 'msg-45',
+          id: 'msg-34',
           sender: 'taylor',
-          content: 'good',
-          delay: 1500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-46',
-          sender: 'taylor',
-          content: 'now you need paper and something to write with',
+          content: 'mia come on',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
-          id: 'msg-47',
+          id: 'msg-35',
           sender: 'taylor',
-          content: 'write your full name on the paper',
+          content: 'the party at devons place',
+          delay: 1800,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-36',
+          sender: 'taylor',
+          content: 'last october',
+          delay: 1500,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-37',
+          sender: 'taylor',
+          content: 'you were wearing that green dress',
           delay: 2200,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-38',
+          sender: 'taylor',
+          content: 'the one i helped you pick out',
+          delay: 1800,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
           id: 'choice-11a',
-          text: 'Done. What next?',
-          nextBeatId: 'turn-off-lights',
+          text: 'i dont own a green dress',
+          nextBeatId: 'more-wrong',
         },
         {
           id: 'choice-11b',
-          text: 'Why my full name?',
-          nextBeatId: 'name-question',
+          text: 'i dont know anyone named devon',
+          nextBeatId: 'more-wrong',
+        },
+        {
+          id: 'choice-11c',
+          text: 'are you ok? youre freaking me out a little',
+          nextBeatId: 'taylor-concerned',
         },
       ],
     },
 
-    'name-question': {
-      id: 'name-question',
+    'taylor-concerned': {
+      id: 'taylor-concerned',
+      items: [
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-39',
+          sender: 'taylor',
+          content: 'im freaking YOU out?',
+          delay: 2200,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-40',
+          sender: 'taylor',
+          content: 'mia youre the one pretending not to remember our whole lives',
+          delay: 2800,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-12a',
+          text: 'im not pretending! none of this happened',
+          nextBeatId: 'more-wrong',
+        },
+        {
+          id: 'choice-12b',
+          text: 'our whole lives? tay what are you talking about',
+          nextBeatId: 'more-wrong',
+        },
+      ],
+    },
+
+    // ============================================
+    // MORE WRONG - escalating
+    // ============================================
+    'more-wrong': {
+      id: 'more-wrong',
+      at: '12:08 AM',
+      items: [
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-41',
+          sender: 'taylor',
+          content: 'ok',
+          delay: 2500,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-42',
+          sender: 'taylor',
+          content: 'ok fine',
+          delay: 1500,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-43',
+          sender: 'taylor',
+          content: 'what DO you remember then',
+          delay: 2200,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-13a',
+          text: 'i remember the roadtrip. i remember us being best friends since high school. i remember normal stuff',
+          nextBeatId: 'taylor-questions',
+        },
+        {
+          id: 'choice-13b',
+          text: 'i remember everything except the stuff youre making up right now',
+          nextBeatId: 'taylor-hurt',
+        },
+      ],
+    },
+
+    'taylor-questions': {
+      id: 'taylor-questions',
+      items: [
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-44',
+          sender: 'taylor',
+          content: 'best friends since high school',
+          delay: 2000,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-45',
+          sender: 'taylor',
+          content: 'mia we met in college',
+          delay: 2200,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-46',
+          sender: 'taylor',
+          content: 'freshman year',
+          delay: 1500,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-47',
+          sender: 'taylor',
+          content: 'you sat next to me in bio and asked to borrow a pen',
+          delay: 2500,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-14a',
+          text: 'no we didnt. we grew up on the same street',
+          nextBeatId: 'contradictions',
+        },
+        {
+          id: 'choice-14b',
+          text: 'taylor stop. this isnt funny anymore',
+          nextBeatId: 'contradictions',
+        },
+      ],
+    },
+
+    'taylor-hurt': {
+      id: 'taylor-hurt',
       items: [
         {
           kind: BeatItemKind.Message,
           id: 'msg-48',
           sender: 'taylor',
-          content: "it's how it knows who you are",
-          delay: 2500,
+          content: 'making up',
+          delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-49',
           sender: 'taylor',
-          content: 'just do it',
+          content: 'wow',
           delay: 1500,
           conversationId: 'taylor-chat',
         },
@@ -726,147 +773,182 @@ export const midnightGameCampaign: Campaign = {
           kind: BeatItemKind.Message,
           id: 'msg-50',
           sender: 'taylor',
-          content: 'please',
-          delay: 1200,
+          content: 'i text you because i miss you and you act like i dont even know you',
+          delay: 3000,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
-          id: 'choice-12a',
-          text: 'Fine. Done.',
-          nextBeatId: 'turn-off-lights',
+          id: 'choice-15a',
+          text: 'i miss you too but youre saying things that arent true',
+          nextBeatId: 'contradictions',
+        },
+        {
+          id: 'choice-15b',
+          text: 'thats not what im saying. somethings just off tonight',
+          nextBeatId: 'contradictions',
         },
       ],
     },
 
-    'turn-off-lights': {
-      id: 'turn-off-lights',
-      at: '11:54 PM',
+    // ============================================
+    // CONTRADICTIONS PILE UP
+    // ============================================
+    'contradictions': {
+      id: 'contradictions',
       items: [
         {
           kind: BeatItemKind.Message,
           id: 'msg-51',
           sender: 'taylor',
-          content: 'now turn off all the lights',
-          delay: 2000,
+          content: 'do you remember when we almost got matching tattoos',
+          delay: 2500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-52',
           sender: 'taylor',
-          content: 'every single one',
-          delay: 1800,
+          content: 'little moons on our ankles',
+          delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-53',
           sender: 'taylor',
-          content: 'and light the candle',
-          delay: 2000,
+          content: 'but then you chickened out at the last second',
+          delay: 2200,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
-          id: 'choice-13a',
-          text: 'Turn off all the lights',
-          nextBeatId: 'lights-off',
-          type: ChoiceType.Action,
+          id: 'choice-16a',
+          text: 'we did get them. i have one right now',
+          nextBeatId: 'taylor-confused',
+        },
+        {
+          id: 'choice-16b',
+          text: 'taylor i have the tattoo. i didnt chicken out',
+          nextBeatId: 'taylor-confused',
         },
       ],
     },
 
-    'lights-off': {
-      id: 'lights-off',
+    'taylor-confused': {
+      id: 'taylor-confused',
       items: [
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-54',
-          content: 'You turn off every light in your apartment.',
-          delay: 2000,
+          sender: 'taylor',
+          content: 'what',
+          delay: 1500,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-55',
-          content: 'The only light comes from your phone screen and the flickering candle.',
-          delay: 2500,
+          sender: 'taylor',
+          content: 'no you dont',
+          delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-56',
-          content: 'The shadows feel heavier somehow.',
-          delay: 2000,
+          sender: 'taylor',
+          content: 'i remember because i got mine alone',
+          delay: 2200,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-57',
           sender: 'taylor',
-          content: 'good',
-          delay: 1500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-58',
-          sender: 'taylor',
-          content: 'now go to your front door',
+          content: 'and i was upset about it for weeks',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
-          id: 'choice-14a',
-          text: 'Go to the front door',
-          nextBeatId: 'at-door',
-          type: ChoiceType.Action,
+          id: 'choice-17a',
+          text: 'taylor look at my instagram. theres pics of both of us getting them',
+          nextBeatId: 'proof',
         },
         {
-          id: 'choice-14b',
-          text: 'Taylor what exactly is this ritual supposed to do?',
-          nextBeatId: 'taylor-explains-ritual',
+          id: 'choice-17b',
+          text: 'this is so weird. why do we remember this differently',
+          nextBeatId: 'getting-scared',
         },
       ],
     },
 
-    'taylor-explains-ritual': {
-      id: 'taylor-explains-ritual',
+    'proof': {
+      id: 'proof',
       items: [
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-58',
+          sender: 'taylor',
+          content: 'i dont see any pics like that',
+          delay: 3000,
+          conversationId: 'taylor-chat',
+        },
         {
           kind: BeatItemKind.Message,
           id: 'msg-59',
           sender: 'taylor',
-          content: 'it lets something in',
-          delay: 2500,
+          content: 'i just looked',
+          delay: 1800,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-60',
           sender: 'taylor',
-          content: 'the midnight man',
-          delay: 2000,
+          content: 'theres nothing',
+          delay: 1500,
           conversationId: 'taylor-chat',
         },
+      ],
+      choices: [
+        {
+          id: 'choice-18a',
+          text: 'what? theyre right there from last march',
+          nextBeatId: 'getting-scared',
+        },
+        {
+          id: 'choice-18b',
+          text: 'taylor youre scaring me',
+          nextBeatId: 'getting-scared',
+        },
+      ],
+    },
+
+    // ============================================
+    // GETTING SCARED
+    // ============================================
+    'getting-scared': {
+      id: 'getting-scared',
+      at: '12:23 AM',
+      items: [
         {
           kind: BeatItemKind.Message,
           id: 'msg-61',
           sender: 'taylor',
-          content: 'but if we do it right',
-          delay: 1800,
+          content: 'mia',
+          delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-62',
           sender: 'taylor',
-          content: 'if we survive until 3:33',
+          content: 'i need to ask you something',
           delay: 2200,
           conversationId: 'taylor-chat',
         },
@@ -874,49 +956,85 @@ export const midnightGameCampaign: Campaign = {
           kind: BeatItemKind.Message,
           id: 'msg-63',
           sender: 'taylor',
-          content: 'he has to leave',
-          delay: 1800,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-64',
-          sender: 'taylor',
-          content: 'and he takes something with him',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-65',
-          sender: 'taylor',
-          content: 'something bad',
-          delay: 1500,
+          content: 'and i need you to be honest',
+          delay: 2000,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
-          id: 'choice-15a',
-          text: "This sounds insane but... I'm at the door.",
-          nextBeatId: 'at-door',
+          id: 'choice-19a',
+          text: 'ok',
+          nextBeatId: 'taylor-asks',
         },
         {
-          id: 'choice-15b',
-          text: 'What do you mean "something bad"?',
-          nextBeatId: 'taylor-wont-say',
+          id: 'choice-19b',
+          text: 'what is it',
+          nextBeatId: 'taylor-asks',
         },
       ],
     },
 
-    'taylor-wont-say': {
-      id: 'taylor-wont-say',
+    'taylor-asks': {
+      id: 'taylor-asks',
+      items: [
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-64',
+          sender: 'taylor',
+          content: 'where are you right now',
+          delay: 2500,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-20a',
+          text: 'home? in bed?',
+          nextBeatId: 'taylor-where',
+        },
+        {
+          id: 'choice-20b',
+          text: 'at my apartment. why?',
+          nextBeatId: 'taylor-where',
+        },
+      ],
+    },
+
+    'taylor-where': {
+      id: 'taylor-where',
+      items: [
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-65',
+          sender: 'taylor',
+          content: 'which apartment',
+          delay: 2000,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-21a',
+          text: 'the one on brooks st? where ive lived for two years?',
+          nextBeatId: 'taylor-wrong-address',
+        },
+        {
+          id: 'choice-21b',
+          text: 'taylor you know where i live',
+          nextBeatId: 'taylor-says-address',
+        },
+      ],
+    },
+
+    'taylor-wrong-address': {
+      id: 'taylor-wrong-address',
       items: [
         {
           kind: BeatItemKind.Message,
           id: 'msg-66',
           sender: 'taylor',
-          content: 'i cant',
+          content: 'brooks st',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
@@ -924,52 +1042,75 @@ export const midnightGameCampaign: Campaign = {
           kind: BeatItemKind.Message,
           id: 'msg-67',
           sender: 'taylor',
-          content: 'not yet',
-          delay: 1500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-68',
-          sender: 'taylor',
-          content: 'please just go to the door',
-          delay: 2200,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-69',
-          sender: 'taylor',
-          content: "we're running out of time",
+          content: 'you moved',
           delay: 1800,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
-          id: 'choice-16a',
-          text: 'Go to the front door',
-          nextBeatId: 'at-door',
-          type: ChoiceType.Action,
+          id: 'choice-22a',
+          text: 'no i didnt?',
+          nextBeatId: 'taylor-insists-moved',
+        },
+        {
+          id: 'choice-22b',
+          text: 'taylor i havent moved',
+          nextBeatId: 'taylor-insists-moved',
         },
       ],
     },
 
-    'at-door': {
-      id: 'at-door',
-      at: '11:57 PM',
+    'taylor-says-address': {
+      id: 'taylor-says-address',
       items: [
         {
-          kind: BeatItemKind.Event,
-          id: 'msg-70',
-          content: "You're standing at your front door, candle in hand.",
+          kind: BeatItemKind.Message,
+          id: 'msg-68',
+          sender: 'taylor',
+          content: 'yeah the place on elm',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
+          id: 'msg-69',
+          sender: 'taylor',
+          content: 'second floor',
+          delay: 1500,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-70',
+          sender: 'taylor',
+          content: 'with the blue door',
+          delay: 1800,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-23a',
+          text: 'i dont live on elm. i live on brooks',
+          nextBeatId: 'taylor-insists-moved',
+        },
+        {
+          id: 'choice-23b',
+          text: 'taylor ive never lived anywhere with a blue door',
+          nextBeatId: 'taylor-insists-moved',
+        },
+      ],
+    },
+
+    'taylor-insists-moved': {
+      id: 'taylor-insists-moved',
+      items: [
+        {
+          kind: BeatItemKind.Message,
           id: 'msg-71',
-          content: 'The flame wavers slightly.',
+          sender: 'taylor',
+          content: 'mia stop',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
@@ -977,23 +1118,23 @@ export const midnightGameCampaign: Campaign = {
           kind: BeatItemKind.Message,
           id: 'msg-72',
           sender: 'taylor',
-          content: 'at exactly midnight',
-          delay: 2500,
+          content: 'just stop',
+          delay: 1500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-73',
           sender: 'taylor',
-          content: 'knock on the door 22 times',
-          delay: 2000,
+          content: 'i was at your apartment last week',
+          delay: 2200,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-74',
           sender: 'taylor',
-          content: 'then open it',
+          content: 'we watched a movie',
           delay: 1800,
           conversationId: 'taylor-chat',
         },
@@ -1001,23 +1142,44 @@ export const midnightGameCampaign: Campaign = {
           kind: BeatItemKind.Message,
           id: 'msg-75',
           sender: 'taylor',
-          content: 'blow out the candle',
-          delay: 1800,
+          content: 'you made that pasta you always make',
+          delay: 2000,
           conversationId: 'taylor-chat',
         },
+      ],
+      choices: [
+        {
+          id: 'choice-24a',
+          text: 'taylor i havent seen you in person in months',
+          nextBeatId: 'when-last-saw',
+        },
+        {
+          id: 'choice-24b',
+          text: 'we didnt hang out last week',
+          nextBeatId: 'when-last-saw',
+        },
+      ],
+    },
+
+    // ============================================
+    // WHEN DID THEY LAST SEE EACH OTHER
+    // ============================================
+    'when-last-saw': {
+      id: 'when-last-saw',
+      items: [
         {
           kind: BeatItemKind.Message,
           id: 'msg-76',
           sender: 'taylor',
-          content: 'and say "I invite you in, Midnight Man"',
-          delay: 2500,
+          content: 'what',
+          delay: 1500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-77',
           sender: 'taylor',
-          content: 'then close the door and relight the candle',
+          content: 'mia thats not true',
           delay: 2200,
           conversationId: 'taylor-chat',
         },
@@ -1025,149 +1187,231 @@ export const midnightGameCampaign: Campaign = {
           kind: BeatItemKind.Message,
           id: 'msg-78',
           sender: 'taylor',
-          content: 'immediately',
-          delay: 1500,
+          content: 'we see each other all the time',
+          delay: 2000,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
-          id: 'choice-17a',
-          text: 'Wait. I have to INVITE it in?',
-          nextBeatId: 'invitation-question',
+          id: 'choice-25a',
+          text: 'when did we last see each other. give me a specific day',
+          nextBeatId: 'taylor-specific',
         },
         {
-          id: 'choice-17b',
-          text: "It's midnight. Here goes nothing.",
-          nextBeatId: 'the-invitation',
+          id: 'choice-25b',
+          text: 'taylor when do you think we last hung out',
+          nextBeatId: 'taylor-specific',
         },
       ],
     },
 
-    'invitation-question': {
-      id: 'invitation-question',
+    'taylor-specific': {
+      id: 'taylor-specific',
       items: [
         {
           kind: BeatItemKind.Message,
           id: 'msg-79',
           sender: 'taylor',
-          content: 'yes',
-          delay: 1500,
+          content: 'last saturday',
+          delay: 2200,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-80',
           sender: 'taylor',
-          content: 'it cant come in unless you invite it',
-          delay: 2500,
+          content: 'we got brunch',
+          delay: 1800,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-81',
           sender: 'taylor',
-          content: "that's the point",
-          delay: 1800,
+          content: 'at that place you like',
+          delay: 1500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-82',
           sender: 'taylor',
-          content: 'hazel its midnight',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-83',
-          sender: 'taylor',
-          content: 'NOW',
-          delay: 1200,
+          content: 'the one with the waffles',
+          delay: 1800,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
-          id: 'choice-18a',
-          text: 'Perform the ritual',
-          nextBeatId: 'the-invitation',
-          type: ChoiceType.Action,
+          id: 'choice-26a',
+          text: 'taylor last saturday i was at my parents house',
+          nextBeatId: 'deep-wrong',
         },
         {
-          id: 'choice-18b',
-          text: "No. I'm not doing this.",
-          nextBeatId: 'ending-refuse-late',
+          id: 'choice-26b',
+          text: 'i didnt leave my apartment last saturday',
+          nextBeatId: 'deep-wrong',
         },
       ],
     },
 
-    'the-invitation': {
-      id: 'the-invitation',
-      at: '12:00 AM',
+    // ============================================
+    // DEEP WRONG - the reality gap
+    // ============================================
+    'deep-wrong': {
+      id: 'deep-wrong',
+      at: '12:34 AM',
       items: [
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
+          id: 'msg-83',
+          sender: 'taylor',
+          content: 'this isnt funny',
+          delay: 2500,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
           id: 'msg-84',
-          content: 'You knock on the door. 22 times.',
-          delay: 3000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-85',
-          content: 'You open it to the darkness of the hallway.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-86',
-          content: 'You blow out the candle.',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-87',
-          content: '"I invite you in, Midnight Man."',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-88',
-          content: 'Your voice sounds wrong in the silence.',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-89',
-          content: 'You close the door.',
-          delay: 1800,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-90',
-          content: 'Your hands are shaking as you relight the candle.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-91',
-          content: 'The flame catches.',
+          sender: 'taylor',
+          content: 'why are you doing this',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
+          id: 'msg-85',
+          sender: 'taylor',
+          content: 'i thought you were my best friend',
+          delay: 2200,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-27a',
+          text: 'i am your best friend. thats why this is scaring me',
+          nextBeatId: 'mia-scared',
+        },
+        {
+          id: 'choice-27b',
+          text: 'im not doing anything! you keep saying things that didnt happen',
+          nextBeatId: 'taylor-defensive',
+        },
+      ],
+    },
+
+    'taylor-defensive': {
+      id: 'taylor-defensive',
+      items: [
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-86',
+          sender: 'taylor',
+          content: 'they did happen',
+          delay: 2000,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-87',
+          sender: 'taylor',
+          content: 'i was there',
+          delay: 1500,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-88',
+          sender: 'taylor',
+          content: 'i remember everything',
+          delay: 2000,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-28a',
+          text: 'taylor something is really wrong',
+          nextBeatId: 'mia-scared',
+        },
+        {
+          id: 'choice-28b',
+          text: 'but i wasnt there. how can we both remember different things',
+          nextBeatId: 'mia-scared',
+        },
+      ],
+    },
+
+    'mia-scared': {
+      id: 'mia-scared',
+      items: [
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-89',
+          sender: 'taylor',
+          content: 'whats wrong',
+          delay: 2000,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-90',
+          sender: 'taylor',
+          content: 'tell me',
+          delay: 1500,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-29a',
+          text: 'either youre remembering a life that didnt happen or i am',
+          nextBeatId: 'either-or',
+        },
+        {
+          id: 'choice-29b',
+          text: 'i dont know how to say this but its like youre talking about someone else',
+          nextBeatId: 'someone-else',
+        },
+      ],
+    },
+
+    'either-or': {
+      id: 'either-or',
+      items: [
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-91',
+          sender: 'taylor',
+          content: 'what do you mean',
+          delay: 2500,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-30a',
+          text: 'one of us is wrong about everything and i dont think its me',
+          nextBeatId: 'divergence',
+        },
+        {
+          id: 'choice-30b',
+          text: 'were remembering different versions of our friendship',
+          nextBeatId: 'divergence',
+        },
+      ],
+    },
+
+    'someone-else': {
+      id: 'someone-else',
+      items: [
+        {
+          kind: BeatItemKind.Message,
           id: 'msg-92',
           sender: 'taylor',
-          content: 'good',
+          content: 'someone else',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
@@ -1175,23 +1419,23 @@ export const midnightGameCampaign: Campaign = {
           kind: BeatItemKind.Message,
           id: 'msg-93',
           sender: 'taylor',
-          content: 'now we wait',
-          delay: 1800,
+          content: 'mia im talking about you',
+          delay: 2200,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-94',
           sender: 'taylor',
-          content: 'keep moving through your apartment',
-          delay: 2200,
+          content: 'my best friend',
+          delay: 1800,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-95',
           sender: 'taylor',
-          content: "don't stop",
+          content: 'who i love',
           delay: 1500,
           conversationId: 'taylor-chat',
         },
@@ -1199,42 +1443,45 @@ export const midnightGameCampaign: Campaign = {
           kind: BeatItemKind.Message,
           id: 'msg-96',
           sender: 'taylor',
-          content: 'and whatever you do',
+          content: 'who im worried about right now',
           delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-97',
-          sender: 'taylor',
-          content: 'dont let the candle go out',
-          delay: 2500,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
-          id: 'choice-19a',
-          text: 'What happens if it goes out?',
-          nextBeatId: 'candle-warning',
+          id: 'choice-31a',
+          text: 'and im worried about you',
+          nextBeatId: 'divergence',
         },
         {
-          id: 'choice-19b',
-          text: 'Start moving through the apartment',
-          nextBeatId: 'the-game-begins',
-          type: ChoiceType.Action,
+          id: 'choice-31b',
+          text: 'taylor i love you too but something is very wrong here',
+          nextBeatId: 'divergence',
         },
       ],
     },
 
-    'candle-warning': {
-      id: 'candle-warning',
+    // ============================================
+    // THE DIVERGENCE
+    // ============================================
+    'divergence': {
+      id: 'divergence',
+      at: '12:47 AM',
       items: [
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-97',
+          sender: 'taylor',
+          content: 'ok',
+          delay: 2500,
+          conversationId: 'taylor-chat',
+        },
         {
           kind: BeatItemKind.Message,
           id: 'msg-98',
           sender: 'taylor',
-          content: 'then hes close',
+          content: 'lets figure this out',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
@@ -1242,66 +1489,96 @@ export const midnightGameCampaign: Campaign = {
           kind: BeatItemKind.Message,
           id: 'msg-99',
           sender: 'taylor',
-          content: 'if it goes out you have 10 seconds to relight it',
-          delay: 2500,
+          content: 'whats your moms name',
+          delay: 2200,
           conversationId: 'taylor-chat',
         },
+      ],
+      choices: [
+        {
+          id: 'choice-32a',
+          text: 'diane',
+          nextBeatId: 'test-answers',
+        },
+        {
+          id: 'choice-32b',
+          text: 'why',
+          nextBeatId: 'taylor-explains-test',
+        },
+      ],
+    },
+
+    'taylor-explains-test': {
+      id: 'taylor-explains-test',
+      items: [
         {
           kind: BeatItemKind.Message,
           id: 'msg-100',
           sender: 'taylor',
-          content: 'or surround yourself with salt',
-          delay: 2200,
+          content: 'just answer',
+          delay: 1800,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-101',
           sender: 'taylor',
-          content: 'do you have salt?',
-          delay: 1800,
+          content: 'if were both confused lets start with stuff we should both know',
+          delay: 2500,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
-          id: 'choice-20a',
-          text: 'Yeah, in the kitchen',
-          nextBeatId: 'the-game-begins',
-        },
-        {
-          id: 'choice-20b',
-          text: "I don't know. Maybe?",
-          nextBeatId: 'the-game-begins',
+          id: 'choice-33a',
+          text: 'diane',
+          nextBeatId: 'test-answers',
         },
       ],
     },
 
-    // ============================================
-    // ACT 3: THINGS GET WRONG
-    // ============================================
-    'the-game-begins': {
-      id: 'the-game-begins',
-      at: '12:08 AM',
+    'test-answers': {
+      id: 'test-answers',
       items: [
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-102',
-          content: 'You walk slowly through your dark apartment.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-103',
-          content: 'The candle flame dances with each step.',
+          sender: 'taylor',
+          content: 'ok good',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
+          id: 'msg-103',
+          sender: 'taylor',
+          content: 'what high school did you go to',
+          delay: 2200,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-34a',
+          text: 'lincoln',
+          nextBeatId: 'test-two',
+        },
+        {
+          id: 'choice-34b',
+          text: 'lincoln high. same as you',
+          nextBeatId: 'test-two-same',
+        },
+      ],
+    },
+
+    'test-two': {
+      id: 'test-two',
+      items: [
+        {
+          kind: BeatItemKind.Message,
           id: 'msg-104',
-          content: "It's so quiet you can hear your own heartbeat.",
+          sender: 'taylor',
+          content: 'mia i went to westfield',
           delay: 2500,
           conversationId: 'taylor-chat',
         },
@@ -1309,317 +1586,451 @@ export const midnightGameCampaign: Campaign = {
           kind: BeatItemKind.Message,
           id: 'msg-105',
           sender: 'taylor',
-          content: 'hows it going',
-          delay: 3000,
+          content: 'we didnt meet until college',
+          delay: 2000,
           conversationId: 'taylor-chat',
         },
-      ],
-      choices: [
-        {
-          id: 'choice-21a',
-          text: 'Nothing yet. Just walking around feeling stupid.',
-          nextBeatId: 'first-sign',
-        },
-        {
-          id: 'choice-21b',
-          text: "It's really dark. This is creepy.",
-          nextBeatId: 'first-sign',
-        },
-      ],
-    },
-
-    'first-sign': {
-      id: 'first-sign',
-      items: [
         {
           kind: BeatItemKind.Message,
           id: 'msg-106',
           sender: 'taylor',
-          content: 'just keep moving',
-          delay: 2000,
+          content: 'i told you this',
+          delay: 1800,
           conversationId: 'taylor-chat',
         },
+      ],
+      choices: [
         {
-          kind: BeatItemKind.Event,
+          id: 'choice-35a',
+          text: 'taylor we grew up together. you lived three houses down',
+          nextBeatId: 'fundamental-split',
+        },
+        {
+          id: 'choice-35b',
+          text: 'no. you went to lincoln. we walked to school together every day',
+          nextBeatId: 'fundamental-split',
+        },
+      ],
+    },
+
+    'test-two-same': {
+      id: 'test-two-same',
+      items: [
+        {
+          kind: BeatItemKind.Message,
           id: 'msg-107',
-          content: 'You walk into your bedroom.',
-          delay: 2500,
+          sender: 'taylor',
+          content: 'i didnt go to lincoln',
+          delay: 2200,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-108',
-          content: 'The temperature seems to drop.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-109',
-          content: 'You can see your breath.',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-110',
           sender: 'taylor',
-          content: 'is it cold',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-      ],
-      choices: [
-        {
-          id: 'choice-22a',
-          text: 'Yeah, suddenly really cold. How did you know?',
-          nextBeatId: 'taylor-knows-too-much',
-        },
-        {
-          id: 'choice-22b',
-          text: 'Wait how did you know that?',
-          nextBeatId: 'taylor-knows-too-much',
-        },
-      ],
-    },
-
-    'taylor-knows-too-much': {
-      id: 'taylor-knows-too-much',
-      items: [
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-111',
-          sender: 'taylor',
-          content: 'its part of the game',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-112',
-          sender: 'taylor',
-          content: 'cold means hes near',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-113',
-          sender: 'taylor',
-          content: 'keep moving',
-          delay: 1500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-114',
-          content: 'You hear a sound from the hallway.',
-          delay: 3000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-115',
-          content: 'Like footsteps. But wrong.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-116',
-          content: 'Too slow. Too deliberate.',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-      ],
-      choices: [
-        {
-          id: 'choice-23a',
-          text: 'Taylor I hear something',
-          nextBeatId: 'hearing-things',
-        },
-        {
-          id: 'choice-23b',
-          text: 'Go check the hallway',
-          nextBeatId: 'check-hallway',
-          type: ChoiceType.Action,
-        },
-      ],
-    },
-
-    'hearing-things': {
-      id: 'hearing-things',
-      items: [
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-117',
-          sender: 'taylor',
-          content: 'dont listen to it',
+          content: 'i went to westfield',
           delay: 1800,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
+          id: 'msg-109',
+          sender: 'taylor',
+          content: 'mia we met in college',
+          delay: 2000,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-36a',
+          text: 'you came to my birthday party when we were 12',
+          nextBeatId: 'fundamental-split',
+        },
+        {
+          id: 'choice-36b',
+          text: 'thats not possible',
+          nextBeatId: 'fundamental-split',
+        },
+      ],
+    },
+
+    // ============================================
+    // THE FUNDAMENTAL SPLIT
+    // ============================================
+    'fundamental-split': {
+      id: 'fundamental-split',
+      items: [
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-110',
+          sender: 'taylor',
+          content: 'mia',
+          delay: 2500,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-111',
+          sender: 'taylor',
+          content: 'what year is it',
+          delay: 2200,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-37a',
+          text: '2026',
+          nextBeatId: 'year-question',
+        },
+        {
+          id: 'choice-37b',
+          text: 'what kind of question is that',
+          nextBeatId: 'year-dodge',
+        },
+      ],
+    },
+
+    'year-dodge': {
+      id: 'year-dodge',
+      items: [
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-112',
+          sender: 'taylor',
+          content: 'just answer',
+          delay: 1800,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-38a',
+          text: '2026',
+          nextBeatId: 'year-question',
+        },
+      ],
+    },
+
+    'year-question': {
+      id: 'year-question',
+      items: [
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-113',
+          sender: 'taylor',
+          content: 'ok',
+          delay: 2000,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-114',
+          sender: 'taylor',
+          content: 'good',
+          delay: 1500,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-115',
+          sender: 'taylor',
+          content: 'same here',
+          delay: 1800,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-116',
+          sender: 'taylor',
+          content: 'what month',
+          delay: 2000,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-39a',
+          text: 'january',
+          nextBeatId: 'month-check',
+        },
+        {
+          id: 'choice-39b',
+          text: 'its january 10th',
+          nextBeatId: 'date-check',
+        },
+      ],
+    },
+
+    'month-check': {
+      id: 'month-check',
+      items: [
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-117',
+          sender: 'taylor',
+          content: 'what day',
+          delay: 1800,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-40a',
+          text: 'the 10th',
+          nextBeatId: 'date-check',
+        },
+      ],
+    },
+
+    'date-check': {
+      id: 'date-check',
+      items: [
+        {
+          kind: BeatItemKind.Message,
           id: 'msg-118',
           sender: 'taylor',
-          content: 'just keep the candle lit',
-          delay: 2000,
+          content: 'mia',
+          delay: 2500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-119',
           sender: 'taylor',
-          content: 'and dont look at it',
-          delay: 2200,
+          content: 'its march',
+          delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-120',
           sender: 'taylor',
-          content: 'haha',
-          delay: 1500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-121',
-          content: 'That "haha" felt wrong.',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-122',
-          content: "Taylor doesn't laugh like that.",
-          delay: 2500,
+          content: 'march 15th',
+          delay: 1800,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
-          id: 'choice-24a',
-          text: 'Are you okay?',
-          nextBeatId: 'something-wrong',
+          id: 'choice-41a',
+          text: 'no its not. i just looked at my phone. january 10th',
+          nextBeatId: 'time-split',
         },
         {
-          id: 'choice-24b',
-          text: "Taylor that's not funny",
-          nextBeatId: 'something-wrong',
+          id: 'choice-41b',
+          text: 'taylor thats two months from now',
+          nextBeatId: 'time-split',
         },
       ],
     },
 
-    'check-hallway': {
-      id: 'check-hallway',
+    // ============================================
+    // TIME SPLIT - something is deeply wrong
+    // ============================================
+    'time-split': {
+      id: 'time-split',
+      at: '1:02 AM',
       items: [
         {
-          kind: BeatItemKind.Event,
-          id: 'msg-123',
-          content: 'You step into the hallway.',
+          kind: BeatItemKind.Message,
+          id: 'msg-121',
+          sender: 'taylor',
+          content: 'mia im looking at my phone right now',
+          delay: 2500,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-122',
+          sender: 'taylor',
+          content: 'march 15 2026',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
+          id: 'msg-123',
+          sender: 'taylor',
+          content: '1:02 am',
+          delay: 1500,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-42a',
+          text: 'thats impossible',
+          nextBeatId: 'impossible',
+        },
+        {
+          id: 'choice-42b',
+          text: 'send me a screenshot',
+          nextBeatId: 'screenshot',
+        },
+      ],
+    },
+
+    'screenshot': {
+      id: 'screenshot',
+      items: [
+        {
+          kind: BeatItemKind.Message,
           id: 'msg-124',
-          content: 'The candle flickers violently.',
-          delay: 2500,
+          sender: 'taylor',
+          content: 'ok',
+          delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-125',
-          content: 'For a moment, you think you see something at the end of the hall.',
+          sender: 'taylor',
+          content: 'sending',
+          delay: 3500,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-126',
+          sender: 'taylor',
+          content: 'did you get it',
           delay: 3000,
           conversationId: 'taylor-chat',
         },
+      ],
+      choices: [
         {
-          kind: BeatItemKind.Event,
-          id: 'msg-126',
-          content: 'Tall. Wrong proportions. Just standing there.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
+          id: 'choice-43a',
+          text: 'no nothing came through',
+          nextBeatId: 'no-image',
         },
         {
-          kind: BeatItemKind.Event,
+          id: 'choice-43b',
+          text: 'i dont see anything',
+          nextBeatId: 'no-image',
+        },
+      ],
+    },
+
+    'no-image': {
+      id: 'no-image',
+      items: [
+        {
+          kind: BeatItemKind.Message,
           id: 'msg-127',
-          content: 'The candle steadies. Nothing there.',
-          delay: 2500,
+          sender: 'taylor',
+          content: 'what',
+          delay: 1800,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-128',
           sender: 'taylor',
-          content: 'you looked didnt you',
-          delay: 2000,
+          content: 'i sent it',
+          delay: 1500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-129',
           sender: 'taylor',
-          content: 'i told you not to look',
-          delay: 2200,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-130',
-          sender: 'taylor',
-          content: 'haha',
-          delay: 1500,
+          content: 'it says delivered',
+          delay: 2000,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
-          id: 'choice-25a',
-          text: 'How did you know I looked?',
-          nextBeatId: 'something-wrong',
-        },
-        {
-          id: 'choice-25b',
-          text: "Stop saying 'haha'. That's weird.",
-          nextBeatId: 'something-wrong',
+          id: 'choice-44a',
+          text: 'theres nothing here taylor',
+          nextBeatId: 'impossible',
         },
       ],
     },
 
-    'something-wrong': {
-      id: 'something-wrong',
-      at: '12:23 AM',
+    'impossible': {
+      id: 'impossible',
       items: [
         {
           kind: BeatItemKind.Message,
-          id: 'msg-131',
+          id: 'msg-130',
           sender: 'taylor',
-          content: 'sorry',
-          delay: 2000,
+          content: 'mia',
+          delay: 2500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
+          id: 'msg-131',
+          sender: 'taylor',
+          content: 'im scared',
+          delay: 2200,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-45a',
+          text: 'me too',
+          nextBeatId: 'both-scared',
+        },
+        {
+          id: 'choice-45b',
+          text: 'i dont understand whats happening',
+          nextBeatId: 'both-scared',
+        },
+      ],
+    },
+
+    // ============================================
+    // BOTH SCARED
+    // ============================================
+    'both-scared': {
+      id: 'both-scared',
+      at: '1:15 AM',
+      items: [
+        {
+          kind: BeatItemKind.Message,
           id: 'msg-132',
           sender: 'taylor',
-          content: 'im just nervous',
-          delay: 1800,
+          content: 'i looked something up',
+          delay: 3000,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-133',
           sender: 'taylor',
-          content: 'youre doing so good hazel',
+          content: 'i searched your name',
           delay: 2200,
           conversationId: 'taylor-chat',
         },
+      ],
+      choices: [
         {
-          kind: BeatItemKind.Event,
+          id: 'choice-46a',
+          text: 'what did you find',
+          nextBeatId: 'search-results',
+        },
+        {
+          id: 'choice-46b',
+          text: 'why',
+          nextBeatId: 'search-results',
+        },
+      ],
+    },
+
+    'search-results': {
+      id: 'search-results',
+      items: [
+        {
+          kind: BeatItemKind.Message,
           id: 'msg-134',
-          content: 'That phrasing is wrong. Taylor would say "well", not "good".',
+          sender: 'taylor',
+          content: 'mia',
           delay: 2500,
           conversationId: 'taylor-chat',
         },
@@ -1627,748 +2038,467 @@ export const midnightGameCampaign: Campaign = {
           kind: BeatItemKind.Message,
           id: 'msg-135',
           sender: 'taylor',
-          content: 'keep going',
-          delay: 1800,
+          content: 'i found a news article',
+          delay: 2500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-136',
           sender: 'taylor',
-          content: 'only a few more hours',
+          content: 'from january',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
-          id: 'choice-26a',
-          text: "Taylor, you're being weird. What's going on?",
-          nextBeatId: 'confrontation',
+          id: 'choice-47a',
+          text: 'what article',
+          nextBeatId: 'the-article',
         },
         {
-          id: 'choice-26b',
-          text: 'Continue through the apartment',
-          nextBeatId: 'candle-crisis',
-          type: ChoiceType.Action,
+          id: 'choice-47b',
+          text: 'taylor youre scaring me',
+          nextBeatId: 'the-article',
         },
       ],
     },
 
-    'confrontation': {
-      id: 'confrontation',
+    'the-article': {
+      id: 'the-article',
       items: [
         {
           kind: BeatItemKind.Message,
           id: 'msg-137',
           sender: 'taylor',
-          content: 'weird how',
-          delay: 2000,
+          content: 'january 10th',
+          delay: 2500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-138',
           sender: 'taylor',
-          content: 'im fine',
-          delay: 1500,
+          content: 'there was an accident',
+          delay: 2500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-139',
           sender: 'taylor',
-          content: 'focus on the game hazel',
+          content: 'on brooks st',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
-          id: 'choice-27a',
-          text: "What's my middle name?",
-          nextBeatId: 'test-question',
+          id: 'choice-48a',
+          text: 'what kind of accident',
+          nextBeatId: 'the-accident',
         },
         {
-          id: 'choice-27b',
-          text: "Tell me something only Taylor would know",
-          nextBeatId: 'test-question',
+          id: 'choice-48b',
+          text: 'thats my street',
+          nextBeatId: 'the-accident',
         },
       ],
     },
 
-    'test-question': {
-      id: 'test-question',
+    'the-accident': {
+      id: 'the-accident',
       items: [
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-140',
-          content: 'A long pause.',
-          delay: 3000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-141',
-          content: 'Taylor is typing...',
+          sender: 'taylor',
+          content: 'a fire',
           delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-142',
-          content: 'Taylor stopped typing.',
-          delay: 3000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-143',
-          content: 'Taylor is typing...',
-          delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
+          id: 'msg-141',
+          sender: 'taylor',
+          content: 'in an apartment building',
+          delay: 2200,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-142',
+          sender: 'taylor',
+          content: 'mia',
+          delay: 2500,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-143',
+          sender: 'taylor',
+          content: 'your name is in the article',
+          delay: 3000,
+          conversationId: 'taylor-chat',
+        },
+      ],
+      choices: [
+        {
+          id: 'choice-49a',
+          text: 'what does it say',
+          nextBeatId: 'revelation-path-1',
+        },
+        {
+          id: 'choice-49b',
+          text: 'taylor stop',
+          nextBeatId: 'taylor-continues',
+        },
+      ],
+    },
+
+    'taylor-continues': {
+      id: 'taylor-continues',
+      items: [
+        {
+          kind: BeatItemKind.Message,
           id: 'msg-144',
           sender: 'taylor',
-          content: 'hazel come on',
-          delay: 2500,
+          content: 'i have to tell you',
+          delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-145',
           sender: 'taylor',
-          content: 'its me',
-          delay: 1500,
+          content: 'mia you have to know',
+          delay: 2200,
           conversationId: 'taylor-chat',
         },
+      ],
+      choices: [
+        {
+          id: 'choice-50a',
+          text: 'tell me',
+          nextBeatId: 'revelation-path-1',
+        },
+      ],
+    },
+
+    // ============================================
+    // THE REVELATION
+    // ============================================
+    'revelation-path-1': {
+      id: 'revelation-path-1',
+      at: '1:33 AM',
+      items: [
         {
           kind: BeatItemKind.Message,
           id: 'msg-146',
           sender: 'taylor',
-          content: "dont do this right now",
-          delay: 2000,
+          content: 'it says you died',
+          delay: 3500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-147',
           sender: 'taylor',
-          content: "we're so close",
-          delay: 1800,
+          content: 'january 10th',
+          delay: 2500,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-148',
+          sender: 'taylor',
+          content: 'two months ago',
+          delay: 2500,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
-          id: 'choice-28a',
-          text: "Answer the question.",
-          nextBeatId: 'candle-crisis-forced',
+          id: 'choice-51a',
+          text: 'thats not possible. im right here',
+          nextBeatId: 'denial',
         },
         {
-          id: 'choice-28b',
-          text: 'Keep playing',
-          nextBeatId: 'candle-crisis',
-          type: ChoiceType.Action,
+          id: 'choice-51b',
+          text: 'taylor thats today for me',
+          nextBeatId: 'today',
         },
       ],
     },
 
-    'candle-crisis-forced': {
-      id: 'candle-crisis-forced',
+    'denial': {
+      id: 'denial',
       items: [
         {
-          kind: BeatItemKind.Event,
-          id: 'msg-148',
-          content: 'The candle goes out.',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-149',
-          content: 'Total darkness.',
-          delay: 1500,
+          sender: 'taylor',
+          content: 'i know',
+          delay: 2500,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-150',
-          content: 'Your phone screen is the only light.',
-          delay: 2000,
+          sender: 'taylor',
+          content: 'i know youre right there',
+          delay: 2200,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-151',
           sender: 'taylor',
-          content: 'RELIGHT IT',
-          delay: 1200,
+          content: 'but',
+          delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-152',
           sender: 'taylor',
-          content: 'NOW',
-          delay: 800,
+          content: 'mia',
+          delay: 1500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-153',
           sender: 'taylor',
-          content: 'HES RIGHT THERE',
-          delay: 1000,
+          content: 'i went to your funeral',
+          delay: 3000,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
-          id: 'choice-29a',
-          text: 'Frantically try to relight the candle',
-          nextBeatId: 'relight-candle',
-          type: ChoiceType.Action,
+          id: 'choice-52a',
+          text: 'no',
+          nextBeatId: 'final-exchange',
         },
         {
-          id: 'choice-29b',
-          text: 'Run to the kitchen for salt',
-          nextBeatId: 'run-for-salt',
-          type: ChoiceType.Action,
+          id: 'choice-52b',
+          text: 'taylor stop please',
+          nextBeatId: 'final-exchange',
         },
       ],
     },
 
-    'candle-crisis': {
-      id: 'candle-crisis',
-      at: '12:31 AM',
+    'today': {
+      id: 'today',
       items: [
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-154',
-          content: 'You walk through the living room.',
+          sender: 'taylor',
+          content: 'what',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
+      ],
+      choices: [
         {
-          kind: BeatItemKind.Event,
+          id: 'choice-53a',
+          text: 'its january 10th right now. tonight.',
+          nextBeatId: 'tonight',
+        },
+      ],
+    },
+
+    'tonight': {
+      id: 'tonight',
+      items: [
+        {
+          kind: BeatItemKind.Message,
           id: 'msg-155',
-          content: 'The candle flame shrinks.',
+          sender: 'taylor',
+          content: 'mia',
           delay: 2500,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-156',
-          content: 'Smaller.',
-          delay: 1500,
+          sender: 'taylor',
+          content: 'the article says the fire started at 2am',
+          delay: 3000,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-157',
-          content: 'Smaller.',
-          delay: 1500,
+          sender: 'taylor',
+          content: 'what time is it there',
+          delay: 2500,
           conversationId: 'taylor-chat',
         },
+      ],
+      choices: [
         {
-          kind: BeatItemKind.Event,
+          id: 'choice-54a',
+          text: 'its almost 2',
+          nextBeatId: 'final-warning',
+        },
+        {
+          id: 'choice-54b',
+          text: 'taylor what are you saying',
+          nextBeatId: 'taylor-explicit',
+        },
+      ],
+    },
+
+    'taylor-explicit': {
+      id: 'taylor-explicit',
+      items: [
+        {
+          kind: BeatItemKind.Message,
           id: 'msg-158',
-          content: 'It goes out.',
-          delay: 2000,
+          sender: 'taylor',
+          content: 'im saying you need to get out',
+          delay: 2500,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-159',
-          content: 'Absolute darkness.',
-          delay: 2000,
+          sender: 'taylor',
+          content: 'NOW',
+          delay: 1500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-160',
           sender: 'taylor',
-          content: 'hazel',
-          delay: 1500,
+          content: 'mia please',
+          delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
           id: 'msg-161',
           sender: 'taylor',
-          content: 'HAZEL',
-          delay: 1000,
+          content: 'get out of the apartment',
+          delay: 2200,
           conversationId: 'taylor-chat',
         },
+      ],
+      choices: [
+        {
+          id: 'choice-55a',
+          text: 'ok im going',
+          nextBeatId: 'ending-leave',
+        },
+        {
+          id: 'choice-55b',
+          text: 'taylor this is crazy',
+          nextBeatId: 'ending-stay',
+        },
+      ],
+    },
+
+    'final-warning': {
+      id: 'final-warning',
+      items: [
         {
           kind: BeatItemKind.Message,
           id: 'msg-162',
           sender: 'taylor',
-          content: 'RELIGHT IT',
-          delay: 1200,
+          content: 'mia get out',
+          delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-163',
-          content: 'You hear breathing. Not yours.',
-          delay: 2500,
+          sender: 'taylor',
+          content: 'get out of the apartment right now',
+          delay: 2200,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-164',
-          content: "It's close.",
-          delay: 2000,
+          sender: 'taylor',
+          content: 'please',
+          delay: 1500,
           conversationId: 'taylor-chat',
         },
-      ],
-      choices: [
         {
-          id: 'choice-30a',
-          text: 'Relight the candle',
-          nextBeatId: 'relight-candle',
-          type: ChoiceType.Action,
-        },
-        {
-          id: 'choice-30b',
-          text: 'Run to the kitchen for salt',
-          nextBeatId: 'run-for-salt',
-          type: ChoiceType.Action,
-        },
-      ],
-    },
-
-    'relight-candle': {
-      id: 'relight-candle',
-      items: [
-        {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-165',
-          content: 'Your hands shake as you fumble with the lighter.',
+          sender: 'taylor',
+          content: 'i already lost you once',
           delay: 2500,
           conversationId: 'taylor-chat',
         },
+      ],
+      choices: [
         {
-          kind: BeatItemKind.Event,
+          id: 'choice-56a',
+          text: 'ok im leaving',
+          nextBeatId: 'ending-leave',
+        },
+        {
+          id: 'choice-56b',
+          text: 'taylor im fine. nothing is going to happen',
+          nextBeatId: 'ending-stay',
+        },
+      ],
+    },
+
+    'final-exchange': {
+      id: 'final-exchange',
+      items: [
+        {
+          kind: BeatItemKind.Message,
           id: 'msg-166',
-          content: 'Click. Nothing.',
-          delay: 2000,
+          sender: 'taylor',
+          content: 'i cried for weeks',
+          delay: 2500,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-167',
-          content: 'Click. Nothing.',
-          delay: 2000,
+          sender: 'taylor',
+          content: 'and then tonight i just',
+          delay: 2200,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-168',
-          content: 'You feel cold breath on the back of your neck.',
-          delay: 3000,
+          sender: 'taylor',
+          content: 'i had to text you',
+          delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
+          kind: BeatItemKind.Message,
           id: 'msg-169',
-          content: 'Click. The flame catches.',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-170',
-          content: "You're alone. The room is empty.",
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-171',
-          content: 'But you know it was there. Right behind you.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-172',
           sender: 'taylor',
-          content: 'good girl',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-173',
-          content: 'Taylor has never called you that.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-174',
-          content: 'Ever.',
-          delay: 1500,
-          conversationId: 'taylor-chat',
-        },
-      ],
-      choices: [
-        {
-          id: 'choice-31a',
-          text: 'Who is this?',
-          nextBeatId: 'the-revelation',
-        },
-        {
-          id: 'choice-31b',
-          text: "That's not something Taylor would say.",
-          nextBeatId: 'the-revelation',
-        },
-      ],
-    },
-
-    'run-for-salt': {
-      id: 'run-for-salt',
-      items: [
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-175',
-          content: 'You run blindly through the dark.',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-176',
-          content: 'You crash into something. A table. Pain in your shin.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-177',
-          content: 'You reach the kitchen. Find the salt.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-178',
-          content: 'You pour it in a circle around yourself.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-179',
-          content: 'The breathing stops.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-180',
-          sender: 'taylor',
-          content: 'clever',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-181',
-          sender: 'taylor',
-          content: 'but you cant stay in there forever',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-182',
-          sender: 'taylor',
-          content: 'haha',
-          delay: 1500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-183',
-          content: 'That laugh again. Wrong. So wrong.',
+          content: 'i didnt think youd answer',
           delay: 2500,
           conversationId: 'taylor-chat',
         },
       ],
       choices: [
         {
-          id: 'choice-32a',
-          text: "You're not Taylor. Who are you?",
-          nextBeatId: 'the-revelation',
+          id: 'choice-57a',
+          text: 'but i did',
+          nextBeatId: 'ending-connection',
         },
         {
-          id: 'choice-32b',
-          text: "What have you done with Taylor?",
-          nextBeatId: 'the-revelation',
-        },
-      ],
-    },
-
-    // ============================================
-    // ACT 4: THE REVELATION
-    // ============================================
-    'the-revelation': {
-      id: 'the-revelation',
-      at: '12:47 AM',
-      presenceChanges: {
-        linda: { status: ContactStatus.Online },
-      },
-      items: [
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-184',
-          sender: 'taylor',
-          content: 'hazel',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-185',
-          sender: 'taylor',
-          content: 'youre hurting my feelings',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-186',
-          sender: 'taylor',
-          content: 'after everything ive done to get here',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        // THE TWIST - Message from Taylor's Mom in a different chat
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-187',
-          sender: 'linda',
-          content: 'Hazel honey are you awake?',
-          delay: 3500,
-          conversationId: 'linda-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-188',
-          sender: 'linda',
-          content: 'Have you heard from Taylor tonight?',
-          delay: 2500,
-          conversationId: 'linda-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-189',
-          sender: 'linda',
-          content: "She was in an accident. She's at St. Mary's.",
-          delay: 3000,
-          conversationId: 'linda-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-190',
-          sender: 'linda',
-          content: "She's been unconscious since 9pm.",
-          delay: 3000,
-          conversationId: 'linda-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-191',
-          sender: 'linda',
-          content: 'Please call me.',
-          delay: 2000,
-          conversationId: 'linda-chat',
-        },
-      ],
-      choices: [
-        {
-          id: 'choice-33a',
-          text: 'Look at the Taylor chat',
-          nextBeatId: 'the-truth',
-          type: ChoiceType.Action,
-        },
-      ],
-    },
-
-    'the-truth': {
-      id: 'the-truth',
-      items: [
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-192',
-          content: "Taylor's been unconscious since 9 PM.",
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-193',
-          content: 'The first message from tonight was at 11:47 PM.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-194',
-          content: 'Almost three hours after the accident.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-195',
-          content: 'Then who have you been talking to?',
-          delay: 3000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-196',
-          sender: 'taylor',
-          content: 'hazel',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-197',
-          sender: 'taylor',
-          content: 'why did you stop playing',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-198',
-          sender: 'taylor',
-          content: 'we were having so much fun',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-      ],
-      choices: [
-        {
-          id: 'choice-34a',
-          text: 'What are you?',
-          nextBeatId: 'entity-speaks',
-        },
-        {
-          id: 'choice-34b',
-          text: "What did you do to Taylor?",
-          nextBeatId: 'entity-speaks',
-        },
-      ],
-    },
-
-    'entity-speaks': {
-      id: 'entity-speaks',
-      items: [
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-199',
-          sender: 'taylor',
-          content: 'taylor was so scared',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-200',
-          sender: 'taylor',
-          content: 'she found the game',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-201',
-          sender: 'taylor',
-          content: 'she started it but didnt finish',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-202',
-          sender: 'taylor',
-          content: 'so i had to find someone who would',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-203',
-          sender: 'taylor',
-          content: 'you invited me in hazel',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-204',
-          sender: 'taylor',
-          content: 'you said the words',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-205',
-          sender: 'taylor',
-          content: 'now im here',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-206',
-          content: 'The candle flame turns blue.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-207',
-          content: 'Then black.',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-208',
-          content: 'A flame that casts no light.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-      ],
-      choices: [
-        {
-          id: 'choice-35a',
-          text: 'Try to leave the apartment',
-          nextBeatId: 'ending-escape-attempt',
-          type: ChoiceType.Action,
-        },
-        {
-          id: 'choice-35b',
-          text: "What happens now?",
-          nextBeatId: 'ending-acceptance',
-        },
-        {
-          id: 'choice-35c',
-          text: 'Call 911',
-          nextBeatId: 'ending-call-for-help',
-          type: ChoiceType.Action,
+          id: 'choice-57b',
+          text: 'im still here',
+          nextBeatId: 'ending-connection',
         },
       ],
     },
@@ -2376,95 +2506,72 @@ export const midnightGameCampaign: Campaign = {
     // ============================================
     // ENDINGS
     // ============================================
-    'ending-refuse': {
-      id: 'ending-refuse',
+    'ending-leave': {
+      id: 'ending-leave',
+      at: '1:54 AM',
       items: [
         {
-          kind: BeatItemKind.Event,
-          id: 'msg-209',
-          content: 'You put down your phone and close your eyes.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-210',
-          content: "Whatever Taylor is going through, you'll deal with it tomorrow.",
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-211',
-          at: '+4h',
-          content: 'You wake to your phone ringing.',
-          delay: 3000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-212',
-          content: "It's Taylor's mom.",
+          kind: BeatItemKind.Message,
+          id: 'msg-170',
+          sender: 'taylor',
+          content: 'good',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
-          id: 'msg-213',
-          content: 'Taylor died in a car accident last night.',
-          delay: 3000,
+          kind: BeatItemKind.Message,
+          id: 'msg-171',
+          sender: 'taylor',
+          content: 'keep texting me',
+          delay: 1800,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
-          id: 'msg-214',
-          content: 'At 9:23 PM.',
+          kind: BeatItemKind.Message,
+          id: 'msg-172',
+          sender: 'taylor',
+          content: 'let me know when youre out',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
-          id: 'msg-215',
-          content: 'Hours before she texted you.',
-          delay: 3000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-216',
-          content: 'You open the chat. The messages are still there.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-217',
-          content: 'As you stare at the screen, a new message appears.',
-          delay: 3000,
+          kind: BeatItemKind.Message,
+          id: 'msg-173',
+          sender: 'taylor',
+          content: 'please',
+          delay: 1500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
-          id: 'msg-218',
+          id: 'msg-174',
           sender: 'taylor',
-          content: 'you should have played with me',
-          delay: 2500,
+          content: 'mia?',
+          delay: 8000,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
-          id: 'msg-219',
+          id: 'msg-175',
           sender: 'taylor',
-          content: 'now i have to find someone else',
-          delay: 2500,
+          content: 'are you out?',
+          delay: 5000,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
-          id: 'msg-220',
+          id: 'msg-176',
           sender: 'taylor',
-          content: 'see you tonight',
-          delay: 3000,
+          content: 'mia please answer',
+          delay: 6000,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-177',
+          sender: 'taylor',
+          content: 'please',
+          delay: 10000,
           conversationId: 'taylor-chat',
         },
       ],
@@ -2472,73 +2579,43 @@ export const midnightGameCampaign: Campaign = {
       isEnding: true,
     },
 
-    'ending-refuse-late': {
-      id: 'ending-refuse-late',
+    'ending-stay': {
+      id: 'ending-stay',
+      at: '1:58 AM',
+      presenceChanges: {
+        taylor: { status: ContactStatus.Offline },
+      },
       items: [
         {
           kind: BeatItemKind.Message,
-          id: 'msg-221',
+          id: 'msg-178',
           sender: 'taylor',
-          content: 'too late',
+          content: 'mia please listen to me',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
-          id: 'msg-222',
+          id: 'msg-179',
           sender: 'taylor',
-          content: 'you already let me in',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-223',
-          content: 'You hear your front door creak open.',
-          delay: 3000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-224',
-          content: "You know you locked it.",
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-225',
-          content: 'Footsteps in the hallway.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-226',
-          content: 'Slow. Deliberate.',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-227',
-          content: 'Getting closer.',
-          delay: 2500,
+          content: 'i cant lose you again',
+          delay: 2200,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
-          id: 'msg-228',
+          id: 'msg-180',
           sender: 'taylor',
-          content: 'thanks for playing',
-          delay: 2500,
+          content: 'mia',
+          delay: 5000,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
-          id: 'msg-229',
-          content: 'Your bedroom door opens.',
-          delay: 3000,
+          kind: BeatItemKind.Message,
+          id: 'msg-181',
+          sender: 'taylor',
+          content: 'do you smell smoke',
+          delay: 8000,
           conversationId: 'taylor-chat',
         },
       ],
@@ -2546,95 +2623,64 @@ export const midnightGameCampaign: Campaign = {
       isEnding: true,
     },
 
-    'ending-escape-attempt': {
-      id: 'ending-escape-attempt',
+    'ending-connection': {
+      id: 'ending-connection',
+      at: '1:47 AM',
       items: [
         {
-          kind: BeatItemKind.Event,
-          id: 'msg-230',
-          content: 'You run for the door.',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-231',
-          content: "It won't open.",
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-232',
-          content: 'You try the windows. Sealed.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-233',
-          content: "You're trapped.",
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
           kind: BeatItemKind.Message,
-          id: 'msg-234',
+          id: 'msg-182',
           sender: 'taylor',
-          content: 'silly',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-235',
-          sender: 'taylor',
-          content: 'you invited me into YOUR home',
+          content: 'yeah',
           delay: 2500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
-          id: 'msg-236',
+          id: 'msg-183',
           sender: 'taylor',
-          content: 'this is my house now',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-237',
-          content: 'You hear it behind you.',
-          delay: 3000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-238',
-          content: 'Breathing.',
+          content: 'you did',
           delay: 2000,
           conversationId: 'taylor-chat',
         },
         {
-          kind: BeatItemKind.Event,
-          id: 'msg-239',
-          content: 'You turn around.',
+          kind: BeatItemKind.Message,
+          id: 'msg-184',
+          sender: 'taylor',
+          content: 'mia',
           delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-240',
-          content: 'In the darkness, something smiles.',
-          delay: 3000,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
-          id: 'msg-241',
+          id: 'msg-185',
           sender: 'taylor',
-          content: 'lets play',
+          content: 'if you can hear me',
+          delay: 2200,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-186',
+          sender: 'taylor',
+          content: 'wherever you are',
+          delay: 2000,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-187',
+          sender: 'taylor',
+          content: 'i miss you so much',
           delay: 2500,
+          conversationId: 'taylor-chat',
+        },
+        {
+          kind: BeatItemKind.Message,
+          id: 'msg-188',
+          sender: 'taylor',
+          content: 'goodnight',
+          delay: 4000,
           conversationId: 'taylor-chat',
         },
       ],
@@ -2642,187 +2688,49 @@ export const midnightGameCampaign: Campaign = {
       isEnding: true,
     },
 
-    'ending-acceptance': {
-      id: 'ending-acceptance',
+    // ============================================
+    // SECOND MEMORY PATH (if player doesn't correct Jake)
+    // ============================================
+    'second-memory': {
+      id: 'second-memory',
       items: [
         {
           kind: BeatItemKind.Message,
-          id: 'msg-242',
+          id: 'msg-189',
           sender: 'taylor',
-          content: 'now',
-          delay: 2000,
+          content: 'yeah you were always so tired',
+          delay: 2200,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
-          id: 'msg-243',
+          id: 'msg-190',
           sender: 'taylor',
-          content: 'we finish the game',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-244',
-          sender: 'taylor',
-          content: 'you survive until 3:33',
+          content: 'remember how you used to fall asleep at movie nights',
           delay: 2500,
           conversationId: 'taylor-chat',
         },
         {
           kind: BeatItemKind.Message,
-          id: 'msg-245',
+          id: 'msg-191',
           sender: 'taylor',
-          content: 'or you dont',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-246',
-          content: 'The lights in your apartment flicker.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-247',
-          content: 'All of them. At once.',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-248',
-          content: 'Then darkness.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-249',
-          content: 'Your phone dies.',
-          delay: 2000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-250',
-          content: "You're alone in the dark.",
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-251',
-          content: "But you're not alone.",
-          delay: 3000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-252',
-          content: 'The game continues.',
-          delay: 3000,
+          content: 'every single time',
+          delay: 1800,
           conversationId: 'taylor-chat',
         },
       ],
-      choices: [],
-      isEnding: true,
-    },
-
-    'ending-call-for-help': {
-      id: 'ending-call-for-help',
-      items: [
+      choices: [
         {
-          kind: BeatItemKind.Event,
-          id: 'msg-253',
-          content: 'You dial 911.',
-          delay: 2000,
-          conversationId: 'taylor-chat',
+          id: 'choice-58a',
+          text: 'haha yeah i was the worst',
+          nextBeatId: 'more-wrong',
         },
         {
-          kind: BeatItemKind.Event,
-          id: 'msg-254',
-          content: 'The phone rings. And rings.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-255',
-          content: 'Someone picks up.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-256',
-          content: '"911, what\'s your emergency?"',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-257',
-          content: 'You start to explain but the voice cuts you off.',
-          delay: 3000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-258',
-          content: '"Hazel. You know we can\'t help you."',
-          delay: 3000,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-259',
-          content: 'The voice is wrong. Familiar.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-260',
-          content: '"You invited him in."',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-261',
-          content: 'The line goes dead.',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-262',
-          sender: 'taylor',
-          content: 'no one is coming',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Message,
-          id: 'msg-263',
-          sender: 'taylor',
-          content: 'its just you and me now',
-          delay: 2500,
-          conversationId: 'taylor-chat',
-        },
-        {
-          kind: BeatItemKind.Event,
-          id: 'msg-264',
-          content: 'Behind you, something steps out of the shadows.',
-          delay: 3000,
-          conversationId: 'taylor-chat',
+          id: 'choice-58b',
+          text: 'wait what coffee shop do you think i worked at',
+          nextBeatId: 'second-correction',
         },
       ],
-      choices: [],
-      isEnding: true,
     },
   },
 }
